@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const Octokit = window.Octokit;
-
     // --- State Management ---
     const state = {
         octokit: null,
