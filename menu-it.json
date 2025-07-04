@@ -1,5 +1,10 @@
 {
   "bar_name": "Bar Luca",
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  },
   "categories": [
     {
       "name": "Caffetteria",
@@ -8,7 +13,7 @@
           "name": "Espresso",
           "price": "1.20€",
           "description": "Caffè espresso classico.",
-          "image": "images/espresso.jpg"
+          "image": "images/aperol-spritz.jpg"
         },
         {
           "name": "Cappuccino",
@@ -58,10 +63,5 @@
         }
       ]
     }
-  ],
-  "labels": {
-    "download_pdf": "Scarica il Menù PDF",
-    "staff_login": "Accesso Staff",
-    "language_toggle": "EN"
-  }
+  ]
 }
