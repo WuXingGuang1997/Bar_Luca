@@ -1,9 +1,9 @@
 window.addEventListener('load', () => {
     // --- State Management ---
     const state = {
-        octokit: null,
         owner: '',
         repo: '',
+        token: '',
         menuData: null,
         currentLang: 'it',
         fileSha: null, // Per gli aggiornamenti su GitHub
@@ -39,15 +39,25 @@ window.addEventListener('load', () => {
         reader.onerror = error => reject(error);
     });
 
-    // --- GitHub API Interaction ---
+    // --- GitHub API Interaction (usando fetch direttamente) ---
     const github = {
         connect: async (owner, repo, token) => {
-            state.octokit = new Octokit({ auth: token });
             try {
                 // Verifica la connessione e i permessi
-                await state.octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 state.owner = owner;
                 state.repo = repo;
+                state.token = token;
                 localStorage.setItem('github_creds', JSON.stringify({ owner, repo, token }));
                 return true;
             } catch (error) {
@@ -62,19 +72,26 @@ window.addEventListener('load', () => {
         fetchMenuFile: async (lang) => {
             try {
                 const filePath = `menu-${lang}.json`;
-                const { data } = await state.octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-                    owner: state.owner,
-                    repo: state.repo,
-                    path: filePath,
+                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${filePath}`, {
+                    headers: {
+                        'Authorization': `token ${state.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
                 });
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        showStatus(`Il file menu-${lang}.json non esiste nel repository. Verrà creato al primo salvataggio.`, true);
+                        return { bar_name: "Nuovo Menù", categories: [], labels: {} };
+                    }
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
                 state.fileSha = data.sha;
                 const content = atob(data.content); // Decodifica da Base64
                 return JSON.parse(content);
             } catch (error) {
-                if (error.status === 404) {
-                    showStatus(`Il file menu-${lang}.json non esiste nel repository. Verrà creato al primo salvataggio.`, true);
-                    return { bar_name: "Nuovo Menù", categories: [], labels: {} };
-                }
                 console.error(`Errore nel fetch del file menu:`, error);
                 showStatus(`Impossibile caricare il file dal repository: ${error.message}`, true);
                 return null;
@@ -85,13 +102,23 @@ window.addEventListener('load', () => {
             const filePath = `images/${fileName}`;
             showStatus(`Caricamento immagine: ${filePath}...`);
             try {
-                await state.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                    owner: state.owner,
-                    repo: state.repo,
-                    path: filePath,
-                    message: `Aggiunge immagine: ${fileName}`,
-                    content: fileContent, // Già in Base64
+                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${filePath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${state.token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Aggiunge immagine: ${fileName}`,
+                        content: fileContent // Già in Base64
+                    })
                 });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
                 showStatus(`Immagine ${fileName} caricata con successo.`, false);
                 return filePath;
             } catch (error) {
@@ -127,16 +154,33 @@ window.addEventListener('load', () => {
                 const content = btoa(JSON.stringify(menuData, null, 2)); // Codifica in Base64
                 
                 showStatus('Salvataggio del menù su GitHub...');
-                const { data } = await state.octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-                    owner: state.owner,
-                    repo: state.repo,
-                    path: filePath,
+                
+                const requestBody = {
                     message: `Aggiornamento menù (${state.currentLang})`,
-                    content: content,
-                    sha: state.fileSha, // Obbligatorio per aggiornare un file esistente
+                    content: content
+                };
+                
+                // Aggiungi SHA solo se il file esiste già
+                if (state.fileSha) {
+                    requestBody.sha = state.fileSha;
+                }
+                
+                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${filePath}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${state.token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
                 });
 
-                state.fileSha = data.content.sha; // Aggiorna lo SHA per il prossimo salvataggio
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const responseData = await response.json();
+                state.fileSha = responseData.content.sha; // Aggiorna lo SHA per il prossimo salvataggio
                 showStatus('Menù salvato con successo su GitHub!', false);
 
             } catch (error) {
@@ -185,10 +229,6 @@ window.addEventListener('load', () => {
         item: (item, catIndex, itemIndex) => {
             const div = document.createElement('div');
             div.className = 'admin-item';
-            
-            // Genera un ID temporaneo per l'immagine se non è un percorso valido
-            const imageIdentifier = item.image.startsWith('images/') ? item.image : (item.image ? `File: ${item.image.split('\\').pop()}` : '');
-            const tempImageId = `temp-img-${Date.now()}`;
             
             div.innerHTML = `
                 <div class="admin-item-fields">
