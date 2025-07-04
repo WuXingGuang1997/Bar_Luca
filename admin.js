@@ -242,14 +242,33 @@ window.addEventListener('load', () => {
                 }
                 state.pendingImageUploads.clear();
 
-                // 2. Salva il file JSON aggiornato
-                const filePath = `menu-${state.currentLang}.json`;
-                const content = utf8ToBase64(JSON.stringify(menuData, null, 2)); // Codifica in Base64 con supporto UTF-8
+                // 2. Salva il file JSON aggiornato con retry per conflitti
+                await github.saveMenuFileWithRetry(menuData);
+
+            } catch (error) {
+                console.error('Errore durante il salvataggio:', error);
+                showStatus(`Errore durante il salvataggio: ${error.message}. Potrebbe essere necessario ricaricare la pagina per ottenere l'ultima versione del file.`, true);
+            }
+        },
+
+        // Nuova funzione per salvare con retry in caso di conflitti
+        saveMenuFileWithRetry: async (menuData, retryCount = 0) => {
+            const maxRetries = 3;
+            const filePath = `menu-${state.currentLang}.json`;
+            
+            try {
+                // Se è un retry, ricarica il file per ottenere l'ultimo SHA
+                if (retryCount > 0) {
+                    showStatus(`Tentativo ${retryCount + 1}/${maxRetries + 1}: Aggiornamento SHA...`);
+                    await github.refreshFileSha(state.currentLang);
+                }
                 
-                showStatus('Salvataggio del menù su GitHub...');
+                const content = utf8ToBase64(JSON.stringify(menuData, null, 2));
+                
+                showStatus(`Salvataggio del menù su GitHub... (tentativo ${retryCount + 1})`);
                 
                 const requestBody = {
-                    message: `Aggiornamento menù (${state.currentLang})`,
+                    message: `Aggiornamento menù (${state.currentLang}) - ${new Date().toISOString()}`,
                     content: content
                 };
                 
@@ -269,7 +288,15 @@ window.addEventListener('load', () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    if (response.status === 409 && retryCount < maxRetries) {
+                        // Conflitto: riprova dopo un breve delay
+                        showStatus(`Conflitto rilevato. Riprovo tra ${1000 + (retryCount * 500)}ms...`, true);
+                        await new Promise(resolve => setTimeout(resolve, 1000 + (retryCount * 500)));
+                        return await github.saveMenuFileWithRetry(menuData, retryCount + 1);
+                    }
+                    
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}. ${errorText}`);
                 }
                 
                 const responseData = await response.json();
@@ -277,8 +304,39 @@ window.addEventListener('load', () => {
                 showStatus('Menù salvato con successo su GitHub!', false);
 
             } catch (error) {
-                console.error('Errore durante il salvataggio:', error);
-                showStatus(`Errore durante il salvataggio: ${error.message}. Potrebbe essere necessario ricaricare la pagina per ottenere l'ultima versione del file.`, true);
+                if (error.message.includes('409') && retryCount < maxRetries) {
+                    // Ultimo tentativo con refresh completo
+                    showStatus(`Ultimo tentativo con refresh completo...`);
+                    await github.refreshFileSha(state.currentLang);
+                    return await github.saveMenuFileWithRetry(menuData, retryCount + 1);
+                }
+                throw error;
+            }
+        },
+
+        // Funzione per aggiornare il SHA del file
+        refreshFileSha: async (lang) => {
+            try {
+                const filePath = `menu-${lang}.json`;
+                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${filePath}`, {
+                    headers: {
+                        'Authorization': `token ${state.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    state.fileSha = data.sha;
+                    showStatus('SHA del file aggiornato.', false);
+                } else if (response.status === 404) {
+                    // File non esiste, rimuovi SHA
+                    state.fileSha = null;
+                    showStatus('File non trovato, verrà creato un nuovo file.', false);
+                }
+            } catch (error) {
+                console.warn('Impossibile aggiornare SHA:', error);
+                state.fileSha = null; // Reset SHA in caso di errore
             }
         }
     };
@@ -596,6 +654,27 @@ window.addEventListener('load', () => {
                 console.error('Errore nel caricamento delle immagini esistenti:', error);
                 showStatus('Errore nel caricamento delle immagini esistenti.', true);
             }
+        },
+
+        // Funzione per aggiornare manualmente il file
+        refreshFile: async () => {
+            try {
+                showStatus('Aggiornamento del file in corso...', false);
+                await github.refreshFileSha(state.currentLang);
+                
+                // Ricarica il menu corrente
+                const menuData = await github.fetchMenuFile(state.currentLang);
+                if (menuData) {
+                    state.menuData = menuData;
+                    render.menuEditor();
+                    showStatus('File aggiornato con successo. Ora puoi salvare le tue modifiche.', false);
+                } else {
+                    showStatus('Impossibile ricaricare il file. Controlla la connessione.', true);
+                }
+            } catch (error) {
+                console.error('Errore durante l\'aggiornamento del file:', error);
+                showStatus(`Errore durante l'aggiornamento: ${error.message}`, true);
+            }
         }
     };
     
@@ -614,6 +693,7 @@ window.addEventListener('load', () => {
         langSelect.addEventListener('change', handle.loadCurrentMenu);
         saveChangesBtn.addEventListener('click', handle.saveChanges);
         addCategoryBtn.addEventListener('click', handle.addCategory);
+        document.getElementById('refresh-file-btn').addEventListener('click', handle.refreshFile);
         menuEditor.addEventListener('click', handle.delegate);
         
         // Event listener per sincronizzazione prezzi

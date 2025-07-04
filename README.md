@@ -95,6 +95,19 @@ Una volta effettuato l'accesso al pannello di amministrazione:
 
 Il sistema caricherà prima le nuove immagini nella cartella `images/` e poi aggiornerà il file del menù. Le modifiche saranno visibili sul sito cliente in circa un minuto.
 
+### ⚠️ Risoluzione Conflitti
+
+Se ricevi un errore durante il salvataggio (es. "HTTP 409: Conflict"):
+
+1. **Clicca su "🔄 Aggiorna File"** per sincronizzare con l'ultima versione del repository
+2. **Riprova a salvare** le tue modifiche
+3. Il sistema ora include un **meccanismo di retry automatico** che risolve la maggior parte dei conflitti
+
+Questo può succedere se:
+- Il file è stato modificato da un'altra sessione
+- Ci sono problemi di sincronizzazione con GitHub
+- Il repository è stato aggiornato esternamente
+
 ---
 
 ## 📸 Gestione Immagini
