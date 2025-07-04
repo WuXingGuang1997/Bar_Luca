@@ -86,10 +86,36 @@ Una volta effettuato l'accesso al pannello di amministrazione:
 2.  **Modifica i campi**: Clicca direttamente sui nomi, prezzi e descrizioni per cambiarli.
 3.  **Elimina**: Usa i pulsanti "Elimina" per rimuovere un prodotto o un'intera categoria.
 4.  **Aggiungi**: Usa i pulsanti "Aggiungi Prodotto" o "Aggiungi Categoria" per creare nuove voci.
-5.  **Carica un'immagine**:
-    -   Clicca sul pulsante "Scegli file" sotto il campo dell'immagine.
-    -   Seleziona un'immagine dal tuo computer.
-    -   Il sistema la preparerà per il caricamento.
+5.  **Gestisci le immagini**:
+    -   **Scegli Esistente**: Clicca su "📁 Scegli Esistente" per selezionare un'immagine già caricata nella cartella `images/`.
+    -   **Carica Nuova**: Oppure clicca su "Scegli file" per caricare una nuova immagine dal tuo computer (JPG, PNG, GIF).
+    -   Vedrai subito un'anteprima dell'immagine selezionata.
+    -   Le nuove immagini verranno salvate automaticamente nella cartella `images/` del repository.
 6.  **Salva tutto**: Quando hai finito le modifiche, clicca sul grande pulsante verde **"Salva Tutte le Modifiche su GitHub"**.
 
-Il sistema caricherà prima le nuove immagini e poi aggiornerà il file del menù. Le modifiche saranno visibili sul sito cliente in circa un minuto.
+Il sistema caricherà prima le nuove immagini nella cartella `images/` e poi aggiornerà il file del menù. Le modifiche saranno visibili sul sito cliente in circa un minuto.
+
+---
+
+## 📸 Gestione Immagini
+
+### Funzionalità Automatiche
+
+- **Cartella Automatica**: Tutte le immagini vengono salvate automaticamente nella cartella `images/` del repository.
+- **Selezione Immagini Esistenti**: Puoi riutilizzare immagini già caricate tramite il pulsante "📁 Scegli Esistente".
+- **Galleria Visiva**: Le immagini esistenti vengono mostrate in una galleria con anteprime per una selezione facile.
+- **Nomi Sicuri**: I nomi dei file vengono automaticamente convertiti in formato sicuro per evitare conflitti.
+- **Anteprima Immediata**: Quando selezioni un'immagine, vedrai subito l'anteprima nel pannello di amministrazione.
+- **Sincronizzazione Prezzi**: I prezzi vengono automaticamente sincronizzati tra italiano e inglese quando modificati.
+
+### Formati Supportati
+
+- **JPG/JPEG**: Consigliato per foto di prodotti
+- **PNG**: Consigliato per loghi o immagini con trasparenza
+- **GIF**: Supportato ma non consigliato per immagini statiche
+
+### Consigli per le Immagini
+
+- **Dimensioni**: Le immagini vengono automaticamente ridimensionate per il web, ma è consigliabile caricare immagini di dimensioni ragionevoli (max 1MB).
+- **Qualità**: Usa immagini di buona qualità per un aspetto professionale.
+- **Formato**: Preferisci JPG per le foto di cibo e bevande.

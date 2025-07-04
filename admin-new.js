@@ -39,25 +39,6 @@ window.addEventListener('load', () => {
         reader.onerror = error => reject(error);
     });
 
-    // Funzione per codificare testo UTF-8 in Base64 (gestisce caratteri speciali)
-    const utf8ToBase64 = (str) => {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-            return String.fromCharCode(parseInt(p1, 16));
-        }));
-    };
-
-    // Funzione per generare un nome file sicuro
-    const generateSafeFileName = (originalName) => {
-        const timestamp = Date.now();
-        const randomStr = Math.random().toString(36).substring(2, 8);
-        const extension = originalName.split('.').pop().toLowerCase();
-        const baseName = originalName.split('.')[0]
-            .replace(/[^a-zA-Z0-9]/g, '_')
-            .toLowerCase()
-            .substring(0, 20);
-        return `${baseName}_${timestamp}_${randomStr}.${extension}`;
-    };
-
     // --- GitHub API Interaction (usando fetch direttamente) ---
     const github = {
         connect: async (owner, repo, token) => {
@@ -121,9 +102,6 @@ window.addEventListener('load', () => {
             const filePath = `images/${fileName}`;
             showStatus(`Caricamento immagine: ${filePath}...`);
             try {
-                // Prima assicuriamoci che la cartella images esista
-                await github.ensureImagesFolder();
-                
                 const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/${filePath}`, {
                     method: 'PUT',
                     headers: {
@@ -132,7 +110,7 @@ window.addEventListener('load', () => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Add product image: ${fileName}`,
+                        message: `Aggiunge immagine: ${fileName}`,
                         content: fileContent // Già in Base64
                     })
                 });
@@ -150,83 +128,12 @@ window.addEventListener('load', () => {
             }
         },
 
-        // Funzione per assicurarsi che la cartella images esista
-        ensureImagesFolder: async () => {
-            try {
-                // Verifica se la cartella images esiste già
-                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/images`, {
-                    headers: {
-                        'Authorization': `token ${state.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (response.status === 404) {
-                    // La cartella non esiste, creiamo un file .gitkeep per crearla
-                    await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/images/.gitkeep`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `token ${state.token}`,
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: 'Create images folder for product images',
-                            content: utf8ToBase64('# This file ensures the images folder exists\n# Product images will be stored in this folder')
-                        })
-                    });
-                    showStatus('Cartella images creata nel repository.', false);
-                }
-            } catch (error) {
-                console.warn('Impossibile verificare/creare la cartella images:', error);
-                // Non lanciamo l'errore perché l'upload potrebbe funzionare comunque
-            }
-        },
-
-        // Funzione per recuperare le immagini esistenti nella cartella images
-        getExistingImages: async () => {
-            try {
-                const response = await fetch(`https://api.github.com/repos/${state.owner}/${state.repo}/contents/images`, {
-                    headers: {
-                        'Authorization': `token ${state.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        return []; // Cartella non esiste ancora
-                    }
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const files = await response.json();
-                // Filtra solo i file immagine (esclude .gitkeep e altri file)
-                const imageFiles = files.filter(file => {
-                    const isFile = file.type === 'file';
-                    const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file.name);
-                    const isNotGitkeep = file.name !== '.gitkeep';
-                    return isFile && isImage && isNotGitkeep;
-                });
-
-                return imageFiles.map(file => ({
-                    name: file.name,
-                    path: file.path,
-                    downloadUrl: file.download_url
-                }));
-            } catch (error) {
-                console.warn('Impossibile recuperare le immagini esistenti:', error);
-                return [];
-            }
-        },
-
         saveMenuFile: async (menuData) => {
             try {
                 // 1. Carica prima tutte le immagini in attesa
                 for (const [tempId, file] of state.pendingImageUploads.entries()) {
                     const base64Content = await toBase64(file);
-                    const safeFileName = generateSafeFileName(file.name);
-                    const newImagePath = await github.uploadImage(safeFileName, base64Content);
+                    const newImagePath = await github.uploadImage(file.name, base64Content);
                     
                     // Aggiorna il percorso dell'immagine nei dati del menù
                     const findAndUpdatePath = (obj) => {
@@ -244,7 +151,7 @@ window.addEventListener('load', () => {
 
                 // 2. Salva il file JSON aggiornato
                 const filePath = `menu-${state.currentLang}.json`;
-                const content = utf8ToBase64(JSON.stringify(menuData, null, 2)); // Codifica in Base64 con supporto UTF-8
+                const content = btoa(JSON.stringify(menuData, null, 2)); // Codifica in Base64
                 
                 showStatus('Salvataggio del menù su GitHub...');
                 
@@ -323,12 +230,6 @@ window.addEventListener('load', () => {
             const div = document.createElement('div');
             div.className = 'admin-item';
             
-            // Determina se mostrare l'immagine o un placeholder
-            const hasImage = item.image && item.image.trim() !== '';
-            const imageElement = hasImage 
-                ? `<img src="${item.image}" alt="${item.name}" class="image-preview">` 
-                : `<div class="no-image-placeholder">Nessuna<br>immagine</div>`;
-            
             div.innerHTML = `
                 <div class="admin-item-fields">
                     <div class="field-group">
@@ -343,19 +244,10 @@ window.addEventListener('load', () => {
                         <label>Descrizione</label>
                         <input type="text" value="${item.description}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="description" placeholder="Descrizione">
                     </div>
-                    <div class="field-group">
+                    <div class="field-group full-width">
                         <label>Immagine</label>
                         <input type="text" value="${item.image}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="image" placeholder="percorso/immagine.jpg" readonly>
-                        <div class="image-options">
-                            <button type="button" class="btn-secondary existing-images-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                                📁 Scegli Esistente
-                            </button>
-                            <span class="or-separator">oppure</span>
-                            <input type="file" accept="image/*" class="image-upload-input" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                        </div>
-                        <div class="image-preview-container">
-                            ${imageElement}
-                        </div>
+                        <input type="file" accept="image/*" class="image-upload-input" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
                     </div>
                 </div>
                 <div class="item-actions">
@@ -425,7 +317,7 @@ window.addEventListener('load', () => {
             await github.saveMenuFile(updatedMenu);
         },
 
-        delegate: async (event) => {
+        delegate: (event) => {
             const target = event.target;
 
             // Delete category
@@ -464,138 +356,17 @@ window.addEventListener('load', () => {
                     
                     state.pendingImageUploads.set(tempId, file);
 
-                    const imagePathInput = target.parentElement.previousElementSibling;
+                    const imagePathInput = target.previousElementSibling;
                     imagePathInput.value = tempId;
-                    
-                    // Mostra anteprima dell'immagine selezionata
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const previewContainer = target.parentElement.nextElementSibling;
-                        previewContainer.innerHTML = `<img src="${e.target.result}" alt="Anteprima" class="image-preview">`;
-                    };
-                    reader.readAsDataURL(file);
                     
                     showStatus(`Immagine "${file.name}" pronta per il caricamento. Salva per confermare.`, false);
                 }
-            }
-
-            // Existing Images Button
-            if (target.matches('.existing-images-btn')) {
-                const catIndex = parseInt(target.dataset.catIndex, 10);
-                const itemIndex = parseInt(target.dataset.itemIndex, 10);
-                await handle.showExistingImagesModal(catIndex, itemIndex);
             }
         },
 
         addCategory: () => {
             state.menuData.categories.push({ name: 'Nuova Categoria', items: [] });
             render.menuEditor();
-        },
-
-        // Funzione per sincronizzare i prezzi tra le lingue
-        syncPricesBetweenLanguages: async (catIndex, itemIndex, newPrice) => {
-            try {
-                const otherLang = state.currentLang === 'it' ? 'en' : 'it';
-                const otherMenuData = await github.fetchMenuFile(otherLang);
-                
-                if (otherMenuData && 
-                    otherMenuData.categories[catIndex] && 
-                    otherMenuData.categories[catIndex].items[itemIndex]) {
-                    
-                    // Aggiorna il prezzo nell'altra lingua
-                    otherMenuData.categories[catIndex].items[itemIndex].price = newPrice;
-                    
-                    // Salva temporaneamente il file dell'altra lingua
-                    const currentLang = state.currentLang;
-                    const currentSha = state.fileSha;
-                    
-                    state.currentLang = otherLang;
-                    await github.saveMenuFile(otherMenuData);
-                    
-                    // Ripristina la lingua corrente
-                    state.currentLang = currentLang;
-                    state.fileSha = currentSha;
-                    
-                    showStatus(`Prezzo sincronizzato anche nella versione ${otherLang === 'it' ? 'italiana' : 'inglese'}.`, false);
-                }
-            } catch (error) {
-                console.warn('Impossibile sincronizzare il prezzo con l\'altra lingua:', error);
-            }
-        },
-
-        // Funzione per mostrare il modal delle immagini esistenti
-        showExistingImagesModal: async (catIndex, itemIndex) => {
-            try {
-                showStatus('Caricamento immagini esistenti...', false);
-                const existingImages = await github.getExistingImages();
-                
-                if (existingImages.length === 0) {
-                    showStatus('Nessuna immagine trovata nella cartella images/. Carica prima alcune immagini.', true);
-                    return;
-                }
-
-                // Crea il modal
-                const modal = document.createElement('div');
-                modal.className = 'image-modal';
-                modal.innerHTML = `
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Seleziona un'immagine esistente</h3>
-                            <button class="modal-close">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="image-grid">
-                                ${existingImages.map(img => `
-                                    <div class="image-option" data-image-path="${img.path}">
-                                        <img src="${img.downloadUrl}" alt="${img.name}" class="existing-image-preview">
-                                        <span class="image-name">${img.name}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                document.body.appendChild(modal);
-
-                // Event listeners per il modal
-                modal.querySelector('.modal-close').addEventListener('click', () => {
-                    document.body.removeChild(modal);
-                });
-
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        document.body.removeChild(modal);
-                    }
-                });
-
-                // Event listener per la selezione dell'immagine
-                modal.querySelectorAll('.image-option').forEach(option => {
-                    option.addEventListener('click', () => {
-                        const imagePath = option.dataset.imagePath;
-                        const imageUrl = option.querySelector('img').src;
-                        
-                        // Aggiorna il campo dell'immagine
-                        const imagePathInput = document.querySelector(`input[data-cat-index="${catIndex}"][data-item-index="${itemIndex}"][data-field="image"]`);
-                        imagePathInput.value = imagePath;
-                        
-                        // Aggiorna l'anteprima
-                        const previewContainer = imagePathInput.closest('.field-group').querySelector('.image-preview-container');
-                        previewContainer.innerHTML = `<img src="${imageUrl}" alt="Immagine selezionata" class="image-preview">`;
-                        
-                        // Aggiorna anche i dati del menu
-                        state.menuData.categories[catIndex].items[itemIndex].image = imagePath;
-                        
-                        showStatus(`Immagine "${option.querySelector('.image-name').textContent}" selezionata.`, false);
-                        document.body.removeChild(modal);
-                    });
-                });
-
-                showStatus('Clicca su un\'immagine per selezionarla.', false);
-            } catch (error) {
-                console.error('Errore nel caricamento delle immagini esistenti:', error);
-                showStatus('Errore nel caricamento delle immagini esistenti.', true);
-            }
         }
     };
     
@@ -615,19 +386,6 @@ window.addEventListener('load', () => {
         saveChangesBtn.addEventListener('click', handle.saveChanges);
         addCategoryBtn.addEventListener('click', handle.addCategory);
         menuEditor.addEventListener('click', handle.delegate);
-        
-        // Event listener per sincronizzazione prezzi
-        menuEditor.addEventListener('blur', async (event) => {
-            if (event.target.matches('input[data-field="price"]')) {
-                const catIndex = parseInt(event.target.dataset.catIndex, 10);
-                const itemIndex = parseInt(event.target.dataset.itemIndex, 10);
-                const newPrice = event.target.value;
-                
-                if (newPrice && newPrice.trim() !== '') {
-                    await handle.syncPricesBetweenLanguages(catIndex, itemIndex, newPrice);
-                }
-            }
-        }, true);
     }
 
     init();

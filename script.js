@@ -7,9 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Elementi del DOM
     const menuContainer = document.getElementById('menu-container');
-    const barName = document.getElementById('bar-name');
-    const langToggleBtn = document.getElementById('language-toggle');
-    const footerText = document.getElementById('footer-text');
+    const langToggleBtn = document.getElementById('lang-toggle');
 
     // Funzione per caricare i dati del menù
     async function loadMenu(lang) {
@@ -35,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!data) return;
 
         // Imposta i testi dell'interfaccia
-        barName.textContent = data.bar_name;
-        footerText.textContent = data.bar_name;
         document.title = data.bar_name + " - Menù Digitale";
         langToggleBtn.textContent = data.labels.language_toggle;
 
@@ -65,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'menu-item';
                     itemDiv.innerHTML = `
-                        ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy">` : ''}
+                        ${item.image && item.image.trim() !== '' ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy" onerror="this.style.display='none'">` : ''}
                         <div class="menu-item-details">
                             <div class="menu-item-header">
                                 <span class="menu-item-name">${item.name}</span>
