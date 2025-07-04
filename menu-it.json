@@ -1,7 +1,7 @@
 {
   "bar_name": "Bar Luca",
   "labels": {
-    "download_pdf": "Scarica il Menù PDF",
+    "download_pdf": "Scarica il MenÃ¹ PDF",
     "staff_login": "Accesso Staff",
     "language_toggle": "EN"
   },
@@ -11,20 +11,20 @@
       "items": [
         {
           "name": "Espresso",
-          "price": "1.10€",
-          "description": "Caffè espresso classico.",
+          "price": "1.10â¬",
+          "description": "CaffÃ¨ espresso classico.",
           "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
-          "price": "2.50€",
+          "price": "2.50â¬",
           "description": "Espresso con latte montato a vapore.",
           "image": "images/cappuccino.jpg"
         },
         {
           "name": "Latte Macchiato",
-          "price": "3.00€",
-          "description": "Latte caldo con un goccio di caffè.",
+          "price": "3.00â¬",
+          "description": "Latte caldo con un goccio di caffÃ¨.",
           "image": ""
         }
       ]
@@ -34,13 +34,13 @@
       "items": [
         {
           "name": "Negroni",
-          "price": "8.00€",
+          "price": "8.00â¬",
           "description": "Gin, Campari, Vermouth rosso.",
           "image": "images/negroni.jpg"
         },
         {
           "name": "Spritz",
-          "price": "7.00€",
+          "price": "7.00â¬",
           "description": "Aperol, Prosecco, Soda.",
           "image": ""
         }
@@ -51,14 +51,20 @@
       "items": [
         {
           "name": "Cornetto",
-          "price": "1.50€",
+          "price": "1.50â¬",
           "description": "Cornetto classico o con farcitura.",
           "image": "images/cornetto.jpg"
         },
         {
           "name": "Panino",
-          "price": "5.00€",
+          "price": "5.00â¬",
           "description": "Panino con prosciutto e formaggio.",
+          "image": ""
+        },
+        {
+          "name": "pizza",
+          "price": "2€",
+          "description": "",
           "image": ""
         }
       ]
