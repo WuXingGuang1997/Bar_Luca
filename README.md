@@ -108,6 +108,17 @@ Questo può succedere se:
 - Ci sono problemi di sincronizzazione con GitHub
 - Il repository è stato aggiornato esternamente
 
+### 🔤 Caratteri Speciali e Codifica
+
+Il sistema supporta completamente **UTF-8** per tutti i caratteri speciali:
+
+- ✅ **Simbolo Euro**: € viene visualizzato correttamente
+- ✅ **Accenti Italiani**: à, è, ì, ò, ù, ç
+- ✅ **Emoji**: ☕ 🍸 🍕 (supportate nei nomi delle categorie)
+- ✅ **Caratteri Internazionali**: Tutti i caratteri Unicode
+
+**Nota**: Se vedi caratteri strani (es. â¬ invece di €), aggiorna la pagina. Il sistema ora usa `TextEncoder` e `TextDecoder` per una gestione UTF-8 perfetta.
+
 ---
 
 ## 📸 Gestione Immagini

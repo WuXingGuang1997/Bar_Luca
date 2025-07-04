@@ -1,0 +1,56 @@
+{
+  "bar_name": "Bar Luca - Caffè & Qualità",
+  "categories": [
+    {
+      "name": "Caffetteria ☕",
+      "items": [
+        {
+          "name": "Espresso",
+          "price": "1.20€",
+          "description": "Caffè espresso classico italiano",
+          "image": ""
+        },
+        {
+          "name": "Cappuccino",
+          "price": "2.50€",
+          "description": "Espresso con latte montato e schiuma cremosa",
+          "image": ""
+        },
+        {
+          "name": "Caffè Macchiato",
+          "price": "1.80€",
+          "description": "Espresso con un tocco di latte caldo",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "name": "Aperitivi & Cocktail 🍸",
+      "items": [
+        {
+          "name": "Spritz Aperol",
+          "price": "6.50€",
+          "description": "Aperol, Prosecco, soda e arancia",
+          "image": ""
+        },
+        {
+          "name": "Negroni",
+          "price": "8.00€",
+          "description": "Gin, Campari, Vermouth rosso",
+          "image": ""
+        },
+        {
+          "name": "Americano",
+          "price": "7.50€",
+          "description": "Campari, Vermouth rosso, soda",
+          "image": ""
+        }
+      ]
+    }
+  ],
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  }
+} 

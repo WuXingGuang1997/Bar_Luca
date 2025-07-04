@@ -41,9 +41,14 @@ window.addEventListener('load', () => {
 
     // Funzione per codificare testo UTF-8 in Base64 (gestisce caratteri speciali)
     const utf8ToBase64 = (str) => {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-            return String.fromCharCode(parseInt(p1, 16));
-        }));
+        // Usa TextEncoder per una codifica UTF-8 corretta
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(str);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
     };
 
     // Funzione per generare un nome file sicuro
@@ -108,7 +113,17 @@ window.addEventListener('load', () => {
                 
                 const data = await response.json();
                 state.fileSha = data.sha;
-                const content = atob(data.content); // Decodifica da Base64
+                
+                // Decodifica da Base64 con supporto UTF-8
+                const base64Content = data.content.replace(/\s/g, ''); // Rimuove spazi e newline
+                const binaryString = atob(base64Content);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                const decoder = new TextDecoder('utf-8');
+                const content = decoder.decode(bytes);
+                
                 return JSON.parse(content);
             } catch (error) {
                 console.error(`Errore nel fetch del file menu:`, error);
