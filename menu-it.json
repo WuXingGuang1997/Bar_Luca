@@ -1,0 +1,67 @@
+{
+  "bar_name": "Bar Luca",
+  "categories": [
+    {
+      "name": "Caffetteria",
+      "items": [
+        {
+          "name": "Espresso",
+          "price": "1.20€",
+          "description": "Caffè espresso classico.",
+          "image": "images/espresso.jpg"
+        },
+        {
+          "name": "Cappuccino",
+          "price": "2.50€",
+          "description": "Espresso con latte montato a vapore.",
+          "image": "images/cappuccino.jpg"
+        },
+        {
+          "name": "Latte Macchiato",
+          "price": "3.00€",
+          "description": "Latte caldo con un goccio di caffè.",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "name": "Cocktail",
+      "items": [
+        {
+          "name": "Negroni",
+          "price": "8.00€",
+          "description": "Gin, Campari, Vermouth rosso.",
+          "image": "images/negroni.jpg"
+        },
+        {
+          "name": "Spritz",
+          "price": "7.00€",
+          "description": "Aperol, Prosecco, Soda.",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "name": "Snack",
+      "items": [
+        {
+          "name": "Cornetto",
+          "price": "1.50€",
+          "description": "Cornetto classico o con farcitura.",
+          "image": "images/cornetto.jpg"
+        },
+        {
+          "name": "Panino",
+          "price": "5.00€",
+          "description": "Panino con prosciutto e formaggio.",
+          "image": ""
+        }
+      ]
+    }
+  ],
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  }
+}

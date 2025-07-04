@@ -1,0 +1,182 @@
+/* --- Variabili CSS per una facile personalizzazione --- */
+:root {
+    --primary-color: #8D5B4C; /* Marrone caldo per un'atmosfera da caffè */
+    --secondary-color: #F4E9CD; /* Sfondo chiaro, pergamena */
+    --text-color: #3D3522; /* Testo scuro, leggibile */
+    --accent-color: #C7A587; /* Un accento più chiaro */
+    --white-color: #FFFFFF;
+    
+    --font-primary: 'Montserrat', sans-serif;
+    --base-font-size: 16px;
+    --h1-font-size: 2rem;
+    --h2-font-size: 1.5rem;
+}
+
+/* --- Stili Generali e Mobile-First --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: var(--base-font-size);
+    line-height: 1.6;
+}
+
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- Header --- */
+header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+header h1 {
+    font-size: var(--h1-font-size);
+    margin: 0;
+}
+
+/* --- Controlli (Lingua) --- */
+.control-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Contenitore Menù --- */
+#menu-container {
+    padding: 1rem;
+}
+
+.category {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 0.5rem;
+}
+
+.category-header h2 {
+    font-size: var(--h2-font-size);
+    color: var(--primary-color);
+}
+
+.category-toggle {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.category-items {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-top: 1rem;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.category.open .category-items {
+    max-height: 2000px; /* Valore abbastanza grande */
+}
+
+.category.open .category-toggle {
+    transform: rotate(45deg);
+}
+
+.menu-item {
+    background-color: var(--white-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.menu-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+.menu-item-details {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.menu-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.menu-item-name {
+    color: var(--primary-color);
+}
+
+.menu-item-price {
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+.menu-item-description {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--accent-color);
+}
+
+/* --- Media Queries per Tablet e Desktop --- */
+@media (min-width: 768px) {
+    .category-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .category-items {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    #menu-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+}

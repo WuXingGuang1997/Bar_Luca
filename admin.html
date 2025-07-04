@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello di Amministrazione</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <h1>Pannello di Amministrazione</h1>
+    </header>
+
+    <main>
+        <div id="auth-section">
+            <h2>Autenticazione GitHub</h2>
+            <p>Per modificare il menù, inserisci le informazioni del tuo repository GitHub e un Personal Access Token.</p>
+            <input type="text" id="github-owner" placeholder="Il tuo nome utente GitHub (owner)">
+            <input type="text" id="github-repo" placeholder="Il nome del repository del menù">
+            <input type="password" id="github-token" placeholder="Il tuo GitHub Personal Access Token">
+            <button id="auth-button">Accedi</button>
+            <p class="auth-status"></p>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <h2>Gestione Menù</h2>
+            <div class="controls">
+                <label for="lang-select">Seleziona lingua da modificare:</label>
+                <select id="lang-select">
+                    <option value="it">Italiano</option>
+                    <option value="en">Inglese</option>
+                </select>
+            </div>
+            
+            <div id="menu-editor">
+                <!-- L'editor del menù verrà generato qui -->
+            </div>
+
+            <div class="panel-actions">
+                 <button id="add-category-btn">Aggiungi Categoria</button>
+                 <button id="save-changes-btn">Salva Tutte le Modifiche su GitHub</button>
+            </div>
+           
+            <div id="status-area"></div>
+        </div>
+    </main>
+
+    <!-- Libreria per comunicare con l'API di GitHub -->
+    <script src="https://cdn.jsdelivr.net/npm/octokit@3.1.2/dist/octokit-core.min.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
