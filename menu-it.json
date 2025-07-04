@@ -1,7 +1,7 @@
 {
   "bar_name": "Bar Luca",
   "labels": {
-    "download_pdf": "Scarica il MenÃ¹ PDF",
+    "download_pdf": "Scarica il MenÃÂ¹ PDF",
     "staff_login": "Accesso Staff",
     "language_toggle": "EN"
   },
@@ -11,20 +11,20 @@
       "items": [
         {
           "name": "Espresso",
-          "price": "1.10â¬",
-          "description": "CaffÃ¨ espresso classico.",
+          "price": "1.10Ã¢ÂÂ¬",
+          "description": "CaffÃÂ¨ espresso classico.",
           "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
-          "price": "2.50â¬",
+          "price": "2.50Ã¢ÂÂ¬",
           "description": "Espresso con latte montato a vapore.",
           "image": "images/cappuccino.jpg"
         },
         {
           "name": "Latte Macchiato",
-          "price": "3.00â¬",
-          "description": "Latte caldo con un goccio di caffÃ¨.",
+          "price": "3.00Ã¢ÂÂ¬",
+          "description": "Latte caldo con un goccio di caffÃÂ¨.",
           "image": ""
         }
       ]
@@ -34,13 +34,13 @@
       "items": [
         {
           "name": "Negroni",
-          "price": "8.00â¬",
+          "price": "8.00Ã¢ÂÂ¬",
           "description": "Gin, Campari, Vermouth rosso.",
           "image": "images/negroni.jpg"
         },
         {
           "name": "Spritz",
-          "price": "7.00â¬",
+          "price": "7.00Ã¢ÂÂ¬",
           "description": "Aperol, Prosecco, Soda.",
           "image": ""
         }
@@ -51,19 +51,19 @@
       "items": [
         {
           "name": "Cornetto",
-          "price": "1.50â¬",
+          "price": "1.50Ã¢ÂÂ¬",
           "description": "Cornetto classico o con farcitura.",
           "image": "images/cornetto.jpg"
         },
         {
           "name": "Panino",
-          "price": "5.00â¬",
+          "price": "5.00Ã¢ÂÂ¬",
           "description": "Panino con prosciutto e formaggio.",
           "image": ""
         },
         {
           "name": "pizza",
-          "price": "2€",
+          "price": "2â¬",
           "description": "",
           "image": ""
         }
