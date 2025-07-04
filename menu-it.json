@@ -17,14 +17,14 @@
         },
         {
           "name": "Cappuccino",
-          "price": "2.50ÃÂ¢ÃÂÃÂ¬",
+          "price": "2.50",
           "description": "Espresso con latte montato a vapore.",
           "image": "images/cappuccino.jpg"
         },
         {
           "name": "Latte Macchiato",
-          "price": "3.00ÃÂ¢ÃÂÃÂ¬",
-          "description": "Latte caldo con un goccio di caffÃÂÃÂ¨.",
+          "price": "3.00",
+          "description": "Latte caldo con un goccio di caff�",
           "image": ""
         }
       ]
@@ -34,13 +34,13 @@
       "items": [
         {
           "name": "Negroni",
-          "price": "8.00ÃÂ¢ÃÂÃÂ¬",
+          "price": "8.00",
           "description": "Gin, Campari, Vermouth rosso.",
           "image": "images/negroni.jpg"
         },
         {
           "name": "Spritz",
-          "price": "7.00ÃÂ¢ÃÂÃÂ¬",
+          "price": "7.00",
           "description": "Aperol, Prosecco, Soda.",
           "image": ""
         }
@@ -51,19 +51,19 @@
       "items": [
         {
           "name": "Cornetto",
-          "price": "1.50ÃÂ¢ÃÂÃÂ¬",
+          "price": "1.50",
           "description": "Cornetto classico o con farcitura.",
           "image": "images/cornetto.jpg"
         },
         {
           "name": "Panino",
-          "price": "5.00ÃÂ¢ÃÂÃÂ¬",
+          "price": "5.00",
           "description": "Panino con prosciutto e formaggio.",
           "image": ""
         },
         {
           "name": "pizza",
-          "price": "2Ã¢ÂÂ¬",
+          "price": "2",
           "description": "",
           "image": ""
         }
