@@ -784,3 +784,17 @@ input[type="file"] {
 .media-item:hover .delete-media-btn {
     opacity: 1;
 }
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #fff;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 20px;
+}
+
+.admin-header h1 {
+    margin: 0;
+}
