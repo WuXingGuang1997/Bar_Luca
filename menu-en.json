@@ -1,10 +1,5 @@
 {
   "bar_name": "Bar Luca",
-  "labels": {
-    "download_pdf": "Download PDF Menu",
-    "staff_login": "Staff Login",
-    "language_toggle": "IT"
-  },
   "categories": [
     {
       "name": "Coffee Shop",
@@ -59,9 +54,14 @@
           "name": "Sandwich",
           "price": "€5.00",
           "description": "Sandwich with ham and cheese.",
-          "image": "images/toast.jpg"
+          "image": ""
         }
       ]
     }
-  ]
+  ],
+  "labels": {
+    "download_pdf": "Download PDF Menu",
+    "staff_login": "Staff Login",
+    "language_toggle": "IT"
+  }
 }

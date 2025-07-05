@@ -23,6 +23,59 @@ window.addEventListener('load', () => {
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const addCategoryBtn = document.getElementById('add-category-btn');
     const statusArea = document.getElementById('status-area');
+    const lastSavedTimer = document.getElementById('last-saved-timer');
+
+    // --- Timer Logic ---
+    const timer = {
+        intervalId: null,
+
+        start: () => {
+            const now = new Date().getTime();
+            localStorage.setItem('lastSavedTimestamp', now);
+            
+            if (timer.intervalId) clearInterval(timer.intervalId);
+            
+            timer.updateDisplay(); // Update immediately
+            timer.intervalId = setInterval(timer.updateDisplay, 5000); // Update every 5 seconds
+        },
+
+        updateDisplay: () => {
+            const lastSavedTimestamp = localStorage.getItem('lastSavedTimestamp');
+            if (!lastSavedTimestamp) return;
+
+            const now = new Date().getTime();
+            const diff = Math.round((now - parseInt(lastSavedTimestamp, 10)) / 1000); // in seconds
+
+            let message = '';
+            if (diff < 2) {
+                message = `Salvato ora. L'aggiornamento su GitHub Pages può richiedere un minuto.`;
+            } else if (diff < 60) {
+                message = `Salvato ${diff} secondi fa. L'aggiornamento su GitHub Pages può richiedere un minuto.`;
+            } else if (diff < 3600) {
+                const minutes = Math.floor(diff / 60);
+                message = `Salvato ${minutes} minut${minutes === 1 ? 'o' : 'i'} fa.`;
+            } else if (diff < 86400) {
+                const hours = Math.floor(diff / 3600);
+                message = `Salvato ${hours} or${hours === 1 ? 'a' : 'e'} fa.`;
+            } else {
+                const days = Math.floor(diff / 86400);
+                message = `Salvato ${days} giorn${days === 1 ? 'o' : 'i'} fa.`;
+            }
+            
+            lastSavedTimer.textContent = `✅ ${message}`;
+            lastSavedTimer.classList.remove('hidden');
+            lastSavedTimer.classList.add('visible');
+        },
+
+        init: () => {
+            const lastSavedTimestamp = localStorage.getItem('lastSavedTimestamp');
+            if (lastSavedTimestamp) {
+                timer.updateDisplay();
+                if (timer.intervalId) clearInterval(timer.intervalId);
+                timer.intervalId = setInterval(timer.updateDisplay, 5000);
+            }
+        }
+    };
 
     // --- Utility Functions ---
     const showStatus = (message, isError = false) => {
@@ -317,6 +370,7 @@ window.addEventListener('load', () => {
                 const responseData = await response.json();
                 state.fileSha = responseData.content.sha; // Aggiorna lo SHA per il prossimo salvataggio
                 showStatus('Menù salvato con successo su GitHub!', false);
+                timer.start(); // Avvia il timer dell'ultimo salvataggio
 
             } catch (error) {
                 if (error.message.includes('409') && retryCount < maxRetries) {
@@ -726,6 +780,8 @@ window.addEventListener('load', () => {
                 }
             }
         }, true);
+        
+        timer.init();
     }
 
     init();

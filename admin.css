@@ -313,6 +313,25 @@ button:hover {
     border: 2px solid #e74c3c;
 }
 
+#last-saved-timer {
+    margin-top: 1.5rem;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #155724;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    display: none; /* Inizialmente nascosto */
+}
+
+#last-saved-timer.visible {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
 /* Preview immagine nel pannello admin */
 .image-preview {
     width: 100px;
