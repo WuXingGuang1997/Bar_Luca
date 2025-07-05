@@ -1,10 +1,5 @@
 {
   "bar_name": "Bar Luca",
-  "labels": {
-    "download_pdf": "Scarica il Menù PDF",
-    "staff_login": "Accesso Staff",
-    "language_toggle": "EN"
-  },
   "categories": [
     {
       "name": "Caffetteria",
@@ -13,7 +8,7 @@
           "name": "Espresso",
           "price": "1.20€",
           "description": "Caffè espresso classico.",
-          "image": "images/latte-macchiato.jpg"
+          "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
@@ -63,5 +58,10 @@
         }
       ]
     }
-  ]
+  ],
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  }
 }

@@ -540,6 +540,9 @@ window.addEventListener('load', () => {
                     const imagePathInput = target.parentElement.previousElementSibling;
                     imagePathInput.value = tempId;
                     
+                    // FIX: Aggiorna lo stato dei dati del menù IMMEDIATAMENTE
+                    state.menuData.categories[catIndex].items[itemIndex].image = tempId;
+                    
                     // Mostra anteprima dell'immagine selezionata
                     const reader = new FileReader();
                     reader.onload = (e) => {
