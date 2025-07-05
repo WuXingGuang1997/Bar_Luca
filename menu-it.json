@@ -55,13 +55,13 @@
           "name": "Insalata Caprese",
           "price": "8.00€",
           "description": "Pomodoro fresco, mozzarella di bufala, basilico e un filo d'olio EVO.",
-          "image": ""
+          "image": "images/insalata_1751701555283_jen3p1.jpeg"
         },
         {
           "name": "Patatine Fritte",
           "price": "4.00€",
           "description": "Porzione abbondante di patatine fritte dorate e croccanti.",
-          "image": ""
+          "image": "images/patatine_1751701548635_zuzx9h.jpeg"
         }
       ]
     },
