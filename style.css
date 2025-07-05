@@ -48,9 +48,9 @@ img {
 header {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: var(--white-color);
-    padding: 1.5rem 1rem;
+    padding: 1.5rem 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     position: sticky;
     top: 0;
@@ -59,28 +59,64 @@ header {
     backdrop-filter: blur(10px);
 }
 
-header h1 {
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--max-width);
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--white-color);
+    box-shadow: var(--shadow-medium);
+}
+
+.bar-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.bar-name {
     font-size: var(--h1-font-size);
     font-weight: 700;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* --- Controlli (Lingua) --- */
+.bar-description {
+    font-size: var(--h3-font-size);
+    opacity: 0.9;
+    font-weight: 300;
+    margin: 0;
+    margin-top: -5px;
+}
+
+.controls {
+    display: flex;
+}
+
 .control-btn {
-    background: linear-gradient(135deg, var(--accent-color) 0%, #d4b896 100%);
-    color: var(--text-color);
+    background-color: var(--accent-color);
+    color: var(--white-color);
     border: none;
-    padding: 0.7rem 1.2rem;
-    border-radius: var(--border-radius);
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--border-radius-lg);
     cursor: pointer;
+    font-size: var(--base-font-size);
     font-weight: 600;
-    font-size: 0.9rem;
-    transition: var(--transition);
-    box-shadow: 0 2px 10px var(--shadow-light);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: var(--shadow-sm);
 }
 
 .control-btn:hover {
@@ -135,6 +171,7 @@ header h1 {
     font-size: 1.8rem;
     font-weight: 300;
     transition: transform 0.3s ease;
+    transform: rotate(-90deg);
 }
 
 /* Stato aperto della categoria */
@@ -143,7 +180,7 @@ header h1 {
 }
 
 .category.open .category-toggle {
-    transform: rotate(90deg);
+    transform: rotate(0deg);
 }
 
 /* Contenitore degli item (nascosto di default) */
@@ -366,18 +403,45 @@ footer {
     }
 }
 
-#logo {
-    position: absolute;
-    top: 50%;
-    left: 20px;
-    transform: translateY(-50%);
-    height: 100px; /* Altezza del logo */
-    width: 100px; /* Larghezza del logo */
-    object-fit: contain; /* Mantiene le proporzioni senza distorcere l'immagine */
-}
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
 
-#bar-name {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    header {
+        padding: 1rem;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .bar-name {
+        font-size: 1.8em; /* Riduciamo la dimensione del font */
+    }
+
+    .bar-description {
+        font-size: 1em;
+    }
+
+    .category-items {
+        grid-template-columns: 1fr; /* Una colonna su mobile */
+        gap: 20px;
+    }
+
+    .contact-line {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contact-line .separator {
+        display: none; /* Nascondiamo i separatori su mobile */
+    }
 }

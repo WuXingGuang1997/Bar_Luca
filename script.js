@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             header.className = 'category-header';
             header.innerHTML = `
                 <h2>${category.name}</h2>
-                <span class="category-toggle">▶</span>
+                <span class="category-toggle">▼</span>
             `;
             
             const itemsGrid = document.createElement('div');
