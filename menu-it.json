@@ -57,6 +57,17 @@
           "image": ""
         }
       ]
+    },
+    {
+      "name": "Nuova Categoria",
+      "items": [
+        {
+          "name": "Nuovo Prodotto",
+          "price": "0.00€",
+          "description": "",
+          "image": ""
+        }
+      ]
     }
   ],
   "labels": {
