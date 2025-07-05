@@ -1,5 +1,10 @@
 {
   "bar_name": "Bar Luca",
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  },
   "categories": [
     {
       "name": "Caffetteria",
@@ -54,14 +59,9 @@
           "name": "Panino",
           "price": "5.00€",
           "description": "Panino con prosciutto e formaggio.",
-          "image": ""
+          "image": "images/panino-prosciutto.jpg"
         }
       ]
     }
-  ],
-  "labels": {
-    "download_pdf": "Scarica il Menù PDF",
-    "staff_login": "Accesso Staff",
-    "language_toggle": "EN"
-  }
+  ]
 }
