@@ -26,13 +26,13 @@
           "name": "Cornetto (Vuoto o Farcito)",
           "price": "1.50€",
           "description": "Scegli tra il classico cornetto vuoto, alla crema, cioccolato o marmellata.",
-          "image": "images/cornetto_1751698931652_macra5.jpeg"
+          "image": ""
         },
         {
           "name": "Succo di Frutta",
           "price": "3.50€",
           "description": "Succo di arancia, ananas o pesca.",
-          "image": "images/succo_1751700750793_3t7isr.jpg"
+          "image": ""
         }
       ]
     },

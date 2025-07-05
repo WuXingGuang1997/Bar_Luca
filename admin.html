@@ -12,71 +12,64 @@
         <h1>Pannello di Amministrazione</h1>
     </header>
 
-    <main class="container">
-        <!-- Sezione Autenticazione -->
-        <section id="auth-section" class="card">
-            <div class="card-header">
-                <h2><i class="fab fa-github"></i> Autenticazione GitHub</h2>
-            </div>
-            <div class="card-content">
-                <p>Per modificare il menù, inserisci le informazioni del tuo repository GitHub e un Personal Access Token con permessi di scrittura.</p>
-                <div class="auth-grid">
-                    <input type="text" id="github-owner" placeholder="Il tuo nome utente GitHub (owner)">
-                    <input type="text" id="github-repo" placeholder="Il nome del repository del menù">
-                    <input type="password" id="github-token" placeholder="Il tuo GitHub Personal Access Token">
-                    <button id="auth-button" class="control-btn save-btn">Accedi e Carica Dati</button>
-                </div>
-            </div>
-        </section>
+    <main>
+        <div id="auth-section">
+            <h2>Autenticazione GitHub</h2>
+            <p>Per modificare il menù, inserisci le informazioni del tuo repository GitHub e un Personal Access Token.</p>
+            <input type="text" id="github-owner" placeholder="Il tuo nome utente GitHub (owner)">
+            <input type="text" id="github-repo" placeholder="Il nome del repository del menù">
+            <input type="password" id="github-token" placeholder="Il tuo GitHub Personal Access Token">
+            <button id="auth-button">Accedi</button>
+            <div class="auth-status"></div>
+        </div>
 
-        <div id="admin-panel" class="hidden">
-            <div class="panel-controls">
-                <div>
-                    <label for="lang-select">Modifica Lingua:</label>
+        <main id="admin-panel" class="hidden">
+            <header class="admin-header">
+                <h1>Pannello di Amministrazione</h1>
+                <div class="controls">
+                    <label for="lang-select">Lingua del menù:</label>
                     <select id="lang-select">
                         <option value="it">Italiano</option>
                         <option value="en">Inglese</option>
                     </select>
                 </div>
-                <div>
-                    <button id="save-changes-btn" class="control-btn save-btn" title="Salva le modifiche su GitHub">
-                        <i class="fas fa-save"></i> Salva Modifiche
-                    </button>
+            </header>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="menu">Editor Menù</button>
+                <button class="tab-btn" data-tab="media">Galleria Media</button>
+            </div>
+
+            <div id="menu-editor-container" class="tab-content active">
+                <div id="menu-editor">
+                    <!-- L'editor del menù verrà renderizzato qui -->
+                </div>
+                <div class="main-actions">
+                    <button id="add-category-btn" class="btn-primary">Aggiungi Categoria</button>
+                    <button id="save-changes-btn" class="btn-save">Salva Modifiche</button>
+                    <button id="refresh-file-btn" class="btn-secondary" title="Forza l'aggiornamento del file dal server se hai conflitti.">Aggiorna File</button>
                 </div>
             </div>
 
-            <!-- Sezione Gestione Media -->
-            <section id="media-manager" class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-images"></i> Gestione Media</h2>
-                    <label for="media-upload-input" class="control-btn" title="Carica una nuova immagine">
-                        <i class="fas fa-upload"></i> Carica Immagine
-                    </label>
-                    <input type="file" id="media-upload-input" accept="image/*" style="display: none;">
+            <div id="media-library-container" class="tab-content">
+                <div class="media-upload-area">
+                    <h3>Carica Nuove Immagini</h3>
+                    <p>Trascina i file qui o clicca per selezionarli. Puoi caricare più immagini contemporaneamente.</p>
+                    <input type="file" id="media-upload-input" multiple accept="image/*">
                 </div>
-                <div id="media-gallery" class="card-content">
-                    <!-- Galleria -->
+                <div id="media-grid">
+                    <!-- La galleria di immagini verrà caricata qui -->
                 </div>
-            </section>
+            </div>
 
-            <!-- Sezione Gestione Prodotti -->
-            <section id="product-manager" class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-clipboard-list"></i> Gestione Prodotti</h2>
-                    <button id="add-category-btn" class="control-btn">
-                        <i class="fas fa-plus"></i> Aggiungi Categoria
-                    </button>
-                </div>
-                <div id="menu-editor" class="card-content">
-                    <!-- Editor Prodotti -->
-                </div>
-            </section>
-        </div>
+            <div id="status-area"></div>
+            <div id="last-saved-timer" class="hidden"></div>
+        </main>
+
+        <!-- Modal per la selezione delle immagini -->
+        <div id="image-selection-modal-container"></div>
     </main>
 
-    <div id="toast-container"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/octokit@3.1.2/dist/octokit.min.js"></script>
-    <script src="admin.js"></script>
+    <script src="admin.js?v=4.1"></script>
 </body>
 </html>
