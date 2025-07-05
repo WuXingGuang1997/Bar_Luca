@@ -1,8 +1,7 @@
 /* Stili per il pannello di amministrazione */
 
 body {
-    background: linear-gradient(135deg, #f8f4e6 0%, var(--secondary-color) 100%);
-    min-height: 100vh;
+    background-color: #f4f8fa;
 }
 
 header {
@@ -705,14 +704,10 @@ input[type="file"] {
 }
 
 .media-upload-area {
-    padding: 30px;
-    border: 2px dashed #007bff;
-    border-radius: 10px;
-    text-align: center;
-    background-color: #f8f9fa;
-    margin-bottom: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border: 2px dashed #0d6efd;
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .media-upload-area:hover {
@@ -793,8 +788,62 @@ input[type="file"] {
     background-color: #fff;
     border-bottom: 2px solid #eee;
     margin-bottom: 20px;
+    top: 0;
+    z-index: 1000;
 }
 
 .admin-header h1 {
     margin: 0;
+}
+
+/* --- Login Form --- */
+#auth-section {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* --- Admin Panel --- */
+.category-name-input {
+    border: none;
+    background: transparent!important;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.category-name-input:focus {
+    box-shadow: none!important;
+}
+
+.accordion-button:not(.collapsed) .category-name-input {
+    color: white;
+}
+
+.list-group-item {
+    background-color: #f8f9fa;
+}
+
+.img-thumbnail {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+/* --- Media Library --- */
+#media-grid .card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+#media-grid .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+#media-grid .card-img-top {
+    height: 120px;
+    object-fit: cover;
+}
+
+/* Status Messages */
+#status-area .alert {
+    margin-top: 1rem;
 }

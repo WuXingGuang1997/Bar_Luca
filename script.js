@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             this.dom = {
-                menuContainer: document.getElementById('menu-container'),
+                menuAccordion: document.getElementById('menu-accordion'),
                 langToggleBtn: document.getElementById('lang-toggle'),
-                barName: document.getElementById('bar-name')
+                barName: document.getElementById('bar-name'),
+                barDescription: document.getElementById('bar-description')
             };
 
             this.init();
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.renderMenu();
             } catch (error) {
                 console.error("Failed to load menu:", error);
-                this.dom.menuContainer.innerHTML = `<p class="error-message">Non è stato possibile caricare il menù. Riprova più tardi.</p>`;
+                this.dom.menuAccordion.innerHTML = `<p class="text-center text-danger">Non è stato possibile caricare il menù. Riprova più tardi.</p>`;
             }
         }
 
@@ -41,53 +42,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         createMenuItem(item) {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'menu-item';
-            itemElement.innerHTML = `
-                ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy" onerror="this.style.display='none'">` : ''}
-                <div class="menu-item-content">
-                    <div class="menu-item-header">
-                        <h3 class="menu-item-name">${item.name}</h3>
-                        <span class="menu-item-price">${item.price}</span>
+            const hasImage = item.image && item.image.trim() !== '';
+            return `
+                <div class="list-group-item menu-item-bs">
+                    <div class="d-flex w-100">
+                        ${hasImage ? `<img src="${item.image}" alt="${item.name}" class="menu-item-img">` : ''}
+                        <div class="flex-grow-1 ${hasImage ? 'ms-3' : ''}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1 item-name">${item.name}</h5>
+                                <span class="item-price">${item.price}</span>
+                            </div>
+                            <p class="mb-1 item-description">${item.description}</p>
+                        </div>
                     </div>
-                    <p class="menu-item-description">${item.description}</p>
                 </div>
             `;
-            return itemElement;
         }
 
-        createCategorySection(category) {
-            const section = document.createElement('div');
-            section.className = 'category';
-        
-            const header = document.createElement('div');
-            header.className = 'category-header';
-            header.innerHTML = `
-                <h2>${category.name}</h2>
-                <span class="category-toggle">▼</span>
+        createCategorySection(category, index) {
+            const categoryId = `category-${index}`;
+            const itemsHtml = category.items.map(item => this.createMenuItem(item)).join('');
+            
+            return `
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading-${categoryId}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${categoryId}" aria-expanded="false" aria-controls="collapse-${categoryId}">
+                            ${category.name}
+                        </button>
+                    </h2>
+                    <div id="collapse-${categoryId}" class="accordion-collapse collapse" aria-labelledby="heading-${categoryId}" data-bs-parent="#menu-accordion">
+                        <div class="accordion-body p-0">
+                            <div class="list-group list-group-flush">
+                                ${itemsHtml || '<p class="p-3">Nessun prodotto in questa categoria.</p>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             `;
-            
-            const itemsGrid = document.createElement('div');
-            itemsGrid.className = 'category-items';
-            
-            if(category.items && category.items.length > 0) {
-                category.items.forEach(item => {
-                    const itemElement = this.createMenuItem(item);
-                    itemsGrid.appendChild(itemElement);
-                });
-            } else {
-                itemsGrid.innerHTML = `<p>Nessun prodotto in questa categoria.</p>`;
-            }
-            
-            section.appendChild(header);
-            section.appendChild(itemsGrid);
-            
-            // Funzionalità di apertura/chiusura
-            header.addEventListener('click', () => {
-                section.classList.toggle('open');
-            });
-            
-            return section;
         }
 
         renderMenu() {
@@ -97,15 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.dom.barName.textContent = data.bar_name;
             this.dom.langToggleBtn.textContent = data.labels.language_toggle;
             
-            this.dom.menuContainer.innerHTML = '';
-            const fragment = document.createDocumentFragment();
-
-            data.categories.forEach(category => {
-                const categorySection = this.createCategorySection(category);
-                fragment.appendChild(categorySection);
-            });
-
-            this.dom.menuContainer.appendChild(fragment);
+            const categoriesHtml = data.categories.map((category, index) => this.createCategorySection(category, index)).join('');
+            this.dom.menuAccordion.innerHTML = categoriesHtml;
         }
     }
 

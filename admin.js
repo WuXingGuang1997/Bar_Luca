@@ -11,25 +11,26 @@ window.addEventListener('load', () => {
     };
 
     // --- DOM Elements ---
-    const authSection = document.getElementById('auth-section');
-    const adminPanel = document.getElementById('admin-panel');
-    const ownerInput = document.getElementById('github-owner');
-    const repoInput = document.getElementById('github-repo');
-    const tokenInput = document.getElementById('github-token');
-    const authButton = document.getElementById('auth-button');
-    const authStatus = document.querySelector('.auth-status');
-    const langSelect = document.getElementById('lang-select');
-    const menuEditor = document.getElementById('menu-editor');
-    const saveChangesBtn = document.getElementById('save-changes-btn');
-    const addCategoryBtn = document.getElementById('add-category-btn');
-    const statusArea = document.getElementById('status-area');
-    const deploymentTimerEl = document.getElementById('last-saved-timer');
-    const tabsContainer = document.querySelector('.tabs');
-    const menuEditorContainer = document.getElementById('menu-editor-container');
-    const mediaLibraryContainer = document.getElementById('media-library-container');
-    const mediaGrid = document.getElementById('media-grid');
-    const mediaUploadArea = document.querySelector('.media-upload-area');
-    const mediaUploadInput = document.getElementById('media-upload-input');
+    const dom = {
+        authSection: document.getElementById('auth-section'),
+        adminPanel: document.getElementById('admin-panel'),
+        ownerInput: document.getElementById('github-owner'),
+        repoInput: document.getElementById('github-repo'),
+        tokenInput: document.getElementById('github-token'),
+        authButton: document.getElementById('auth-button'),
+        authStatus: document.querySelector('#auth-section .auth-status'),
+        langSelect: document.getElementById('lang-select'),
+        menuEditor: document.getElementById('menu-editor'),
+        saveChangesBtn: document.getElementById('save-changes-btn'),
+        addCategoryBtn: document.getElementById('add-category-btn'),
+        refreshFileBtn: document.getElementById('refresh-file-btn'),
+        statusArea: document.getElementById('status-area'),
+        deploymentTimerEl: document.getElementById('last-saved-timer'),
+        mediaGrid: document.getElementById('media-grid'),
+        mediaUploadArea: document.querySelector('.media-upload-area'),
+        mediaUploadInput: document.getElementById('media-upload-input'),
+        mediaTab: document.getElementById('media-tab'),
+    };
 
     // --- Deployment Timer Logic ---
     const deploymentTimer = {
@@ -46,16 +47,16 @@ window.addEventListener('load', () => {
             let countdown = 50; // 50 secondi di countdown
             
             const update = () => {
-                deploymentTimerEl.classList.remove('hidden', 'success');
-                deploymentTimerEl.classList.add('visible');
+                dom.deploymentTimerEl.classList.remove('hidden', 'success');
+                dom.deploymentTimerEl.classList.add('visible');
 
                 if (countdown > 0) {
-                    deploymentTimerEl.textContent = `✅ Salvataggio riuscito! Aggiornamento del sito in corso... Tempo stimato: ${countdown}s`;
+                    dom.deploymentTimerEl.textContent = `✅ Salvataggio riuscito! Aggiornamento del sito in corso... Tempo stimato: ${countdown}s`;
                     countdown--;
                 } else {
                     deploymentTimer.stop();
-                    deploymentTimerEl.textContent = `🎉 Sito aggiornato! Le modifiche dovrebbero essere visibili.`;
-                    deploymentTimerEl.classList.add('success');
+                    dom.deploymentTimerEl.textContent = `🎉 Sito aggiornato! Le modifiche dovrebbero essere visibili.`;
+                    dom.deploymentTimerEl.classList.add('success');
                 }
             };
             
@@ -66,9 +67,9 @@ window.addEventListener('load', () => {
 
     // --- Utility Functions ---
     const showStatus = (message, isError = false) => {
-        statusArea.textContent = message;
-        statusArea.className = isError ? 'error' : 'success';
-        statusArea.style.display = 'block';
+        dom.statusArea.textContent = message;
+        dom.statusArea.className = isError ? 'error' : 'success';
+        dom.statusArea.style.display = 'block';
     };
 
     // Funzione per convertire un file in Base64
@@ -126,8 +127,7 @@ window.addEventListener('load', () => {
                 return true;
             } catch (error) {
                 console.error("Errore di connessione a GitHub:", error);
-                authStatus.textContent = `Connessione fallita. Controlla le credenziali e i permessi del token. Dettagli: ${error.message}`;
-                authStatus.style.color = 'red';
+                dom.authStatus.innerHTML = `<div class="alert alert-danger">Connessione fallita: ${error.message}</div>`;
                 localStorage.removeItem('github_creds');
                 return false;
             }
@@ -445,200 +445,97 @@ window.addEventListener('load', () => {
 
     // --- UI Rendering ---
     const render = {
-        mediaLibrary: (images) => {
-            mediaGrid.innerHTML = '';
-            if (images.length === 0) {
-                mediaGrid.innerHTML = '<p>Nessuna immagine nella galleria. Caricane qualcuna!</p>';
-                return;
-            }
-
-            const fragment = document.createDocumentFragment();
-            images.forEach(image => {
-                const item = document.createElement('div');
-                item.className = 'media-item';
-                item.dataset.imageName = image.name;
-                item.dataset.imageSha = image.sha;
-                item.dataset.imagePath = image.path;
-
-                item.innerHTML = `
-                    <img src="${image.downloadUrl}" alt="${image.name}" loading="lazy">
-                    <div class="media-item-info">
-                        <p class="media-item-name">${image.name}</p>
-                    </div>
-                    <button class="delete-media-btn" title="Elimina Immagine">&times;</button>
-                `;
-                fragment.appendChild(item);
-            });
-            mediaGrid.appendChild(fragment);
-        },
         menuEditor: () => {
             if (!state.menuData) return;
-
-            const createField = (name, label, value, catIndex, itemIndex, type = 'text') => {
-                const inputId = `${name}-${catIndex}-${itemIndex}`;
-                if (type === 'textarea') {
-                    return `
-                        <div class="field">
-                            <label for="${inputId}">${label}</label>
-                            <textarea id="${inputId}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="${name}" placeholder="${label}">${value || ''}</textarea>
-                        </div>`;
-                }
-                if (name === 'price') {
-                     return `
-                        <div class="field">
-                            <label for="${inputId}">${label}</label>
-                            <div class="price-input-wrapper">
-                                 <input type="number" step="0.01" id="${inputId}" value="${String(value || '').replace(/[^0-9.]/g, '')}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="price" placeholder="es. 5.50">
-                                 <span class="currency-symbol">€</span>
-                            </div>
-                        </div>`;
-                }
-                return `
-                    <div class="field">
-                        <label for="${inputId}">${label}</label>
-                        <input type="${type}" id="${inputId}" value="${value || ''}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="${name}" placeholder="${label}" ${name === 'image' ? 'readonly' : ''}>
-                    </div>`;
-            };
-
-            const createCategoryUI = (category, catIndex) => {
-                const itemsHtml = category.items.map((item, itemIndex) => {
-                    const imageElement = `<img src="${item.image || 'placeholder.png'}" alt="Preview" class="image-preview" onerror="this.onerror=null;this.src='placeholder.png';">`;
-                    
-                    return `
-                        <div class="item-editor" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                            <div class="field-group-main">
-                                ${createField('name', 'Nome Prodotto', item.name, catIndex, itemIndex)}
-                                ${createField('price', 'Prezzo (€)', item.price, catIndex, itemIndex, 'text')}
-                            </div>
-                            <div class="field-group-desc">
-                                ${createField('description', 'Descrizione', item.description, catIndex, itemIndex, 'textarea')}
-                            </div>
-                            <div class="field-group-img">
-                                ${createField('image', 'Percorso Immagine', item.image, catIndex, itemIndex)}
-                                <div class="image-controls">
-                                    <button class="existing-images-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">Scegli Esistente</button>
-                                    <div class="image-preview-container">
-                                        ${imageElement}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item-actions">
-                                <button class="delete-item-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">Rimuovi Prodotto</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('') || '<p>Nessun prodotto in questa categoria.</p>';
-
-                return `
-                    <div class="admin-category">
-                        <div class="admin-category-header">
-                            <input type="text" value="${category.name}" data-cat-index="${catIndex}" data-field="categoryName" placeholder="Nome Categoria">
-                            <button class="delete-btn delete-category-btn" data-cat-index="${catIndex}">Elimina Categoria</button>
-                        </div>
-                        <div class="admin-items-grid">
-                            ${itemsHtml}
-                        </div>
-                        <button class="add-item-btn" data-cat-index="${catIndex}">Aggiungi Prodotto</button>
-                    </div>
-                `;
-            };
-
-            menuEditor.innerHTML = state.menuData.categories.map((category, catIndex) => 
-                createCategoryUI(category, catIndex)
-            ).join('');
+            dom.menuEditor.innerHTML = state.menuData.categories.map((cat, catIndex) => render.category(cat, catIndex)).join('');
         },
         category: (category, catIndex) => {
-            const div = document.createElement('div');
-            div.className = 'admin-category';
-            div.innerHTML = `
-                <div class="admin-category-header">
-                    <input type="text" value="${category.name}" data-cat-index="${catIndex}" data-field="categoryName" placeholder="Nome Categoria">
-                    <button class="delete-btn delete-category-btn" data-cat-index="${catIndex}">Elimina Categoria</button>
+            const itemsHtml = category.items.map((item, itemIndex) => render.item(item, catIndex, itemIndex)).join('');
+            return `
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-cat-${catIndex}">
+                            <input type="text" class="form-control-plaintext category-name-input" value="${category.name}" data-cat-index="${catIndex}" data-field="categoryName">
+                        </button>
+                    </h2>
+                    <div id="collapse-cat-${catIndex}" class="accordion-collapse collapse" data-bs-parent="#menu-editor">
+                        <div class="accordion-body">
+                            <div class="list-group">
+                                ${itemsHtml}
+                            </div>
+                             <button class="btn btn-outline-primary btn-sm mt-2 add-item-btn" data-cat-index="${catIndex}">Aggiungi Prodotto</button>
+                        </div>
+                         <button class="btn btn-danger btn-sm m-2 delete-category-btn" data-cat-index="${catIndex}">Elimina Categoria</button>
+                    </div>
                 </div>
             `;
-            
-            // Crea un contenitore a griglia per i prodotti
-            const itemsGrid = document.createElement('div');
-            itemsGrid.className = 'admin-items-grid';
-
-            if (category.items.length > 0) {
-                category.items.forEach((item, itemIndex) => {
-                    itemsGrid.appendChild(render.item(item, catIndex, itemIndex));
-                });
-            } else {
-                itemsGrid.innerHTML = `<p class="no-items-message">Nessun prodotto in questa categoria. Clicca "Aggiungi Prodotto" per iniziare.</p>`;
-            }
-
-            div.appendChild(itemsGrid);
-
-            const addItemBtn = document.createElement('button');
-            addItemBtn.className = 'add-item-btn';
-            addItemBtn.dataset.catIndex = catIndex;
-            addItemBtn.textContent = 'Aggiungi Prodotto';
-            div.appendChild(addItemBtn);
-
-            return div;
         },
         item: (item, catIndex, itemIndex) => {
-            const div = document.createElement('div');
-            div.className = 'admin-item';
-            
-            // Determina se mostrare l'immagine o un placeholder
-            const hasImage = item.image && item.image.trim() !== '';
-            const imageElement = hasImage 
-                ? `<img src="${item.image}" alt="${item.name}" class="image-preview">` 
-                : `<div class="no-image-placeholder">Nessuna<br>immagine</div>`;
-            
-            div.innerHTML = `
-                <div class="item-editor" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                    <div class="field-group-main">
-                        ${createField('name', 'Nome Prodotto', item.name, catIndex, itemIndex)}
-                        ${createField('price', 'Prezzo (€)', item.price, catIndex, itemIndex, 'text')}
-                    </div>
-                    <div class="field-group-desc">
-                        ${createField('description', 'Descrizione', item.description, catIndex, itemIndex, 'textarea')}
-                    </div>
-                    <div class="field-group-img">
-                        ${createField('image', 'Percorso Immagine', item.image, catIndex, itemIndex)}
-                        <div class="image-controls">
-                            <button class="existing-images-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">Scegli Esistente</button>
-                            <div class="image-preview-container">
-                                ${imageElement}
+            return `
+                <div class="list-group-item">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" value="${item.name}" placeholder="Nome prodotto" data-field="name" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
+                        </div>
+                        <div class="col-md-4">
+                             <textarea class="form-control form-control-sm" placeholder="Descrizione" data-field="description" data-cat-index="${catIndex}" data-item-index="${itemIndex}">${item.description}</textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" value="${String(item.price).replace('€','')}" placeholder="Prezzo" data-field="price" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
+                                <span class="input-group-text">€</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="item-actions">
-                        <button class="delete-item-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">Rimuovi Prodotto</button>
+                        <div class="col-md-3 d-flex align-items-center">
+                            <img src="${item.image || 'placeholder.png'}" class="img-thumbnail me-2" style="width: 40px; height: 40px;">
+                            <button class="btn btn-outline-secondary btn-sm choose-existing-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">...</button>
+                            <button class="btn btn-outline-danger btn-sm ms-1 delete-item-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">X</button>
+                        </div>
                     </div>
                 </div>
             `;
-            return div;
+        },
+        mediaLibrary: (images) => {
+            dom.mediaGrid.innerHTML = images.map(img => `
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="${img.downloadUrl}" class="card-img-top" alt="${img.name}">
+                        <div class="card-body p-2">
+                            <p class="card-text small">${img.name}</p>
+                        </div>
+                        <div class="card-footer p-1">
+                            <button class="btn btn-danger btn-sm w-100 delete-media-btn" data-image-path="${img.path}" data-image-sha="${img.sha}" data-image-name="${img.name}">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        },
+        imageModal: (images, catIndex, itemIndex) => {
+            // ... logica per creare e mostrare un modal di Bootstrap ...
         }
     };
 
     // --- Event Handlers ---
     const handle = {
         auth: async () => {
-            const owner = ownerInput.value.trim();
-            const repo = repoInput.value.trim();
-            const token = tokenInput.value.trim();
+            const owner = dom.ownerInput.value.trim();
+            const repo = dom.repoInput.value.trim();
+            const token = dom.tokenInput.value.trim();
             if (!owner || !repo || !token) {
-                authStatus.textContent = 'Per favore, compila tutti i campi.';
-                authStatus.style.color = 'red';
+                dom.authStatus.innerHTML = `<div class="alert alert-danger">Per favore, compila tutti i campi.</div>`;
                 return;
             }
-            authStatus.textContent = 'Connessione in corso...';
-            authStatus.style.color = 'orange';
+            dom.authStatus.innerHTML = '<div class="alert alert-info">Connessione in corso...</div>';
 
             if (await github.connect(owner, repo, token)) {
-                authSection.classList.add('hidden');
-                adminPanel.classList.remove('hidden');
+                dom.authSection.classList.add('hidden');
+                dom.adminPanel.classList.remove('hidden');
                 await handle.loadCurrentMenu();
             }
         },
 
         loadCurrentMenu: async () => {
-            state.currentLang = langSelect.value;
+            state.currentLang = dom.langSelect.value;
             showStatus(`Caricamento menù in ${state.currentLang}...`);
             state.menuData = await github.fetchMenuFile(state.currentLang);
             if (state.menuData) {
@@ -982,24 +879,24 @@ window.addEventListener('load', () => {
         const savedCreds = localStorage.getItem('github_creds');
         if (savedCreds) {
             const { owner, repo, token } = JSON.parse(savedCreds);
-            ownerInput.value = owner;
-            repoInput.value = repo;
-            tokenInput.value = token;
+            dom.ownerInput.value = owner;
+            dom.repoInput.value = repo;
+            dom.tokenInput.value = token;
             handle.auth();
         }
         
-        authButton.addEventListener('click', handle.auth);
-        langSelect.addEventListener('change', handle.loadCurrentMenu);
-        saveChangesBtn.addEventListener('click', handle.saveChanges);
-        addCategoryBtn.addEventListener('click', handle.addCategory);
-        document.getElementById('refresh-file-btn').addEventListener('click', handle.refreshFile);
+        dom.authButton.addEventListener('click', handle.auth);
+        dom.langSelect.addEventListener('change', handle.loadCurrentMenu);
+        dom.saveChangesBtn.addEventListener('click', handle.saveChanges);
+        dom.addCategoryBtn.addEventListener('click', handle.addCategory);
+        dom.refreshFileBtn.addEventListener('click', handle.refreshFile);
         
         // Delegati per eventi specifici
-        menuEditor.addEventListener('click', handle.delegateMenuActions);
-        mediaGrid.addEventListener('click', handle.delegateMediaActions);
+        dom.menuEditor.addEventListener('click', handle.delegateMenuActions);
+        dom.mediaGrid.addEventListener('click', handle.delegateMediaActions);
         
         // Event listener per sincronizzazione prezzi
-        menuEditor.addEventListener('blur', async (event) => {
+        dom.menuEditor.addEventListener('blur', async (event) => {
             if (event.target.matches('input[data-field="price"]')) {
                 const catIndex = parseInt(event.target.dataset.catIndex, 10);
                 const itemIndex = parseInt(event.target.dataset.itemIndex, 10);
@@ -1012,27 +909,27 @@ window.addEventListener('load', () => {
         }, true);
 
         // Tab switching
-        tabsContainer.addEventListener('click', handle.tabs);
+        dom.tabsContainer.addEventListener('click', handle.tabs);
 
         // Media upload listeners
-        mediaUploadArea.addEventListener('click', () => mediaUploadInput.click());
-        mediaUploadInput.addEventListener('change', (e) => handle.mediaUpload(e.target.files));
+        dom.mediaUploadArea.addEventListener('click', () => dom.mediaUploadInput.click());
+        dom.mediaUploadInput.addEventListener('change', (e) => handle.mediaUpload(e.target.files));
 
         // Drag & Drop for media upload
-        mediaUploadArea.addEventListener('dragover', (e) => {
+        dom.mediaUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            mediaUploadArea.classList.add('dragover');
+            dom.mediaUploadArea.classList.add('dragover');
         });
-        mediaUploadArea.addEventListener('dragleave', (e) => {
+        dom.mediaUploadArea.addEventListener('dragleave', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            mediaUploadArea.classList.remove('dragover');
+            dom.mediaUploadArea.classList.remove('dragover');
         });
-        mediaUploadArea.addEventListener('drop', (e) => {
+        dom.mediaUploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            mediaUploadArea.classList.remove('dragover');
+            dom.mediaUploadArea.classList.remove('dragover');
             handle.mediaUpload(e.dataTransfer.files);
         });
     }
