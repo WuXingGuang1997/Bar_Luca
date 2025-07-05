@@ -13,7 +13,7 @@
           "name": "Espresso",
           "price": "1.20€",
           "description": "Caffè espresso classico.",
-          "image": "images/pizza.jpeg"
+          "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
@@ -25,7 +25,7 @@
           "name": "Latte Macchiato",
           "price": "3.00€",
           "description": "Latte caldo con un goccio di caffè.",
-          "image": ""
+          "image": "images/latte-macchiato.jpg"
         }
       ]
     },
@@ -42,7 +42,7 @@
           "name": "Spritz",
           "price": "7.00€",
           "description": "Aperol, Prosecco, Soda.",
-          "image": ""
+          "image": "images/aperol-spritz.jpg"
         }
       ]
     },
@@ -59,7 +59,7 @@
           "name": "Panino",
           "price": "5.00€",
           "description": "Panino con prosciutto e formaggio.",
-          "image": ""
+          "image": "images/panino-prosciutto.jpg"
         }
       ]
     }
