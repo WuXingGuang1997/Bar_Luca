@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello di Amministrazione</title>
+    <link rel="stylesheet" href="style.css?v=4.1">
+    <link rel="stylesheet" href="admin.css?v=4.1">
+</head>
+<body>
+    <header>
+        <h1>Pannello di Amministrazione</h1>
+    </header>
+
+    <main>
+        <div id="auth-section">
+            <h2>Autenticazione GitHub</h2>
+            <p>Per modificare il menù, inserisci le informazioni del tuo repository GitHub e un Personal Access Token.</p>
+            <input type="text" id="github-owner" placeholder="Il tuo nome utente GitHub (owner)">
+            <input type="text" id="github-repo" placeholder="Il nome del repository del menù">
+            <input type="password" id="github-token" placeholder="Il tuo GitHub Personal Access Token">
+            <button id="auth-button">Accedi</button>
+            <div class="auth-status"></div>
+        </div>
+
+        <main id="admin-panel" class="hidden">
+            <header class="admin-header">
+                <h1>Pannello di Amministrazione</h1>
+                <div class="controls">
+                    <label for="lang-select">Lingua del menù:</label>
+                    <select id="lang-select">
+                        <option value="it">Italiano</option>
+                        <option value="en">Inglese</option>
+                    </select>
+                </div>
+            </header>
+
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="menu">Editor Menù</button>
+                <button class="tab-btn" data-tab="media">Galleria Media</button>
+            </div>
+
+            <div id="menu-editor-container" class="tab-content active">
+                <div id="menu-editor">
+                    <!-- L'editor del menù verrà renderizzato qui -->
+                </div>
+                <div class="main-actions">
+                    <button id="add-category-btn" class="btn-primary">Aggiungi Categoria</button>
+                    <button id="save-changes-btn" class="btn-save">Salva Modifiche</button>
+                    <button id="refresh-file-btn" class="btn-secondary" title="Forza l'aggiornamento del file dal server se hai conflitti.">Aggiorna File</button>
+                </div>
+            </div>
+
+            <div id="media-library-container" class="tab-content">
+                <div class="media-upload-area">
+                    <h3>Carica Nuove Immagini</h3>
+                    <p>Trascina i file qui o clicca per selezionarli. Puoi caricare più immagini contemporaneamente.</p>
+                    <input type="file" id="media-upload-input" multiple accept="image/*">
+                </div>
+                <div id="media-grid">
+                    <!-- La galleria di immagini verrà caricata qui -->
+                </div>
+            </div>
+
+            <div id="status-area"></div>
+            <div id="last-saved-timer" class="hidden"></div>
+        </main>
+
+        <!-- Modal per la selezione delle immagini -->
+        <div id="image-selection-modal-container"></div>
+    </main>
+
+    <script src="admin.js?v=4.1"></script>
+</body>
+</html>
