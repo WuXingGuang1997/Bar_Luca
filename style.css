@@ -52,7 +52,6 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: sticky;
     top: 0;
     z-index: 100;
     box-shadow: 0 4px 20px var(--shadow-medium);
