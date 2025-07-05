@@ -95,6 +95,14 @@ button:hover {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
 }
 
+button:disabled,
+button:disabled:hover {
+    background: linear-gradient(135deg, #b0bec5 0%, #90a4ae 100%);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .hidden {
     display: none;
 }
@@ -172,13 +180,33 @@ button:hover {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
+.admin-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem; /* Spazio prima del pulsante "Aggiungi Prodotto" */
+}
+
+.no-items-message {
+    grid-column: 1 / -1; /* Occupa tutta la larghezza della griglia */
+    text-align: center;
+    padding: 2rem;
+    font-style: italic;
+    color: #888;
+    background-color: #fafafa;
+    border-radius: var(--border-radius);
+}
+
 .admin-item {
     border: 1px solid #e0e0e0;
     border-radius: var(--border-radius);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
+    padding: 1.5rem; /* Padding ridotto */
+    margin-bottom: 0; /* Rimuovo il margine inferiore, ora gestito dal gap della griglia */
     background: #fafafa;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .admin-item:hover {
@@ -191,7 +219,7 @@ button:hover {
 .admin-item-fields {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem; /* Gap ridotto */
 }
 
 .field-group {
@@ -318,10 +346,10 @@ button:hover {
     padding: 0.8rem 1rem;
     text-align: center;
     font-size: 0.95rem;
-    font-style: italic;
-    color: #155724;
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    border: 1px solid rgba(39, 174, 96, 0.3);
+    font-weight: 600;
+    color: #004085; /* Blu per info */
+    background: linear-gradient(135deg, #cce5ff 0%, #b8daff 100%);
+    border: 1px solid rgba(0, 64, 133, 0.3);
     border-radius: var(--border-radius);
     transition: all 0.3s ease;
     display: none; /* Inizialmente nascosto */
@@ -330,6 +358,12 @@ button:hover {
 #last-saved-timer.visible {
     display: block;
     animation: fadeIn 0.5s ease;
+}
+
+#last-saved-timer.success {
+    color: #155724; /* Verde per successo */
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-color: rgba(39, 174, 96, 0.3);
 }
 
 /* Preview immagine nel pannello admin */
@@ -584,5 +618,18 @@ button:hover {
     
     .or-separator {
         text-align: center;
+    }
+}
+
+/* Media queries per la griglia dei prodotti */
+@media (min-width: 1200px) {
+    .admin-items-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1600px) {
+    .admin-items-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
 }

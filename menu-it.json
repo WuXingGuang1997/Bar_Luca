@@ -1,10 +1,5 @@
 {
   "bar_name": "Bar Luca",
-  "labels": {
-    "download_pdf": "Scarica il Menù PDF",
-    "staff_login": "Accesso Staff",
-    "language_toggle": "EN"
-  },
   "categories": [
     {
       "name": "Caffetteria",
@@ -25,7 +20,7 @@
           "name": "Latte Macchiato",
           "price": "3.00€",
           "description": "Latte caldo con un goccio di caffè.",
-          "image": "images/latte-macchiato.jpg"
+          "image": ""
         }
       ]
     },
@@ -42,7 +37,7 @@
           "name": "Spritz",
           "price": "7.00€",
           "description": "Aperol, Prosecco, Soda.",
-          "image": "images/aperol-spritz.jpg"
+          "image": ""
         }
       ]
     },
@@ -59,9 +54,14 @@
           "name": "Panino",
           "price": "5.00€",
           "description": "Panino con prosciutto e formaggio.",
-          "image": "images/panino-prosciutto.jpg"
+          "image": ""
         }
       ]
     }
-  ]
+  ],
+  "labels": {
+    "download_pdf": "Scarica il Menù PDF",
+    "staff_login": "Accesso Staff",
+    "language_toggle": "EN"
+  }
 }

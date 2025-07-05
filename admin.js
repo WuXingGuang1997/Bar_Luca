@@ -23,57 +23,38 @@ window.addEventListener('load', () => {
     const saveChangesBtn = document.getElementById('save-changes-btn');
     const addCategoryBtn = document.getElementById('add-category-btn');
     const statusArea = document.getElementById('status-area');
-    const lastSavedTimer = document.getElementById('last-saved-timer');
+    const deploymentTimerEl = document.getElementById('last-saved-timer');
 
-    // --- Timer Logic ---
-    const timer = {
+    // --- Deployment Timer Logic ---
+    const deploymentTimer = {
         intervalId: null,
-
+        stop: () => {
+            if (deploymentTimer.intervalId) {
+                clearInterval(deploymentTimer.intervalId);
+                deploymentTimer.intervalId = null;
+            }
+        },
         start: () => {
-            const now = new Date().getTime();
-            localStorage.setItem('lastSavedTimestamp', now);
+            deploymentTimer.stop(); // Ferma qualsiasi timer precedente
+
+            let countdown = 50; // 50 secondi di countdown
             
-            if (timer.intervalId) clearInterval(timer.intervalId);
+            const update = () => {
+                deploymentTimerEl.classList.remove('hidden', 'success');
+                deploymentTimerEl.classList.add('visible');
+
+                if (countdown > 0) {
+                    deploymentTimerEl.textContent = `✅ Salvataggio riuscito! Aggiornamento del sito in corso... Tempo stimato: ${countdown}s`;
+                    countdown--;
+                } else {
+                    deploymentTimer.stop();
+                    deploymentTimerEl.textContent = `🎉 Sito aggiornato! Le modifiche dovrebbero essere visibili.`;
+                    deploymentTimerEl.classList.add('success');
+                }
+            };
             
-            timer.updateDisplay(); // Update immediately
-            timer.intervalId = setInterval(timer.updateDisplay, 5000); // Update every 5 seconds
-        },
-
-        updateDisplay: () => {
-            const lastSavedTimestamp = localStorage.getItem('lastSavedTimestamp');
-            if (!lastSavedTimestamp) return;
-
-            const now = new Date().getTime();
-            const diff = Math.round((now - parseInt(lastSavedTimestamp, 10)) / 1000); // in seconds
-
-            let message = '';
-            if (diff < 2) {
-                message = `Salvato ora. L'aggiornamento su GitHub Pages può richiedere un minuto.`;
-            } else if (diff < 60) {
-                message = `Salvato ${diff} secondi fa. L'aggiornamento su GitHub Pages può richiedere un minuto.`;
-            } else if (diff < 3600) {
-                const minutes = Math.floor(diff / 60);
-                message = `Salvato ${minutes} minut${minutes === 1 ? 'o' : 'i'} fa.`;
-            } else if (diff < 86400) {
-                const hours = Math.floor(diff / 3600);
-                message = `Salvato ${hours} or${hours === 1 ? 'a' : 'e'} fa.`;
-            } else {
-                const days = Math.floor(diff / 86400);
-                message = `Salvato ${days} giorn${days === 1 ? 'o' : 'i'} fa.`;
-            }
-            
-            lastSavedTimer.textContent = `✅ ${message}`;
-            lastSavedTimer.classList.remove('hidden');
-            lastSavedTimer.classList.add('visible');
-        },
-
-        init: () => {
-            const lastSavedTimestamp = localStorage.getItem('lastSavedTimestamp');
-            if (lastSavedTimestamp) {
-                timer.updateDisplay();
-                if (timer.intervalId) clearInterval(timer.intervalId);
-                timer.intervalId = setInterval(timer.updateDisplay, 5000);
-            }
+            update(); // Chiamata immediata
+            deploymentTimer.intervalId = setInterval(update, 1000);
         }
     };
 
@@ -370,7 +351,7 @@ window.addEventListener('load', () => {
                 const responseData = await response.json();
                 state.fileSha = responseData.content.sha; // Aggiorna lo SHA per il prossimo salvataggio
                 showStatus('Menù salvato con successo su GitHub!', false);
-                timer.start(); // Avvia il timer dell'ultimo salvataggio
+                deploymentTimer.start(); // Avvia il timer dell'ultimo salvataggio
 
             } catch (error) {
                 if (error.message.includes('409') && retryCount < maxRetries) {
@@ -426,22 +407,29 @@ window.addEventListener('load', () => {
             div.className = 'admin-category';
             div.innerHTML = `
                 <div class="admin-category-header">
-                    <input type="text" value="${category.name}" class="category-name-input" data-cat-index="${catIndex}" placeholder="Nome Categoria">
-                    <div class="category-actions">
-                        <button class="delete-btn delete-category-btn" data-cat-index="${catIndex}">Elimina Categoria</button>
-                    </div>
+                    <input type="text" value="${category.name}" data-cat-index="${catIndex}" data-field="categoryName" placeholder="Nome Categoria">
+                    <button class="delete-btn delete-category-btn" data-cat-index="${catIndex}">Elimina Categoria</button>
                 </div>
             `;
+            
+            // Crea un contenitore a griglia per i prodotti
+            const itemsGrid = document.createElement('div');
+            itemsGrid.className = 'admin-items-grid';
 
-            category.items.forEach((item, itemIndex) => {
-                const itemEl = render.item(item, catIndex, itemIndex);
-                div.appendChild(itemEl);
-            });
+            if (category.items.length > 0) {
+                category.items.forEach((item, itemIndex) => {
+                    itemsGrid.appendChild(render.item(item, catIndex, itemIndex));
+                });
+            } else {
+                itemsGrid.innerHTML = `<p class="no-items-message">Nessun prodotto in questa categoria. Clicca "Aggiungi Prodotto" per iniziare.</p>`;
+            }
+
+            div.appendChild(itemsGrid);
 
             const addItemBtn = document.createElement('button');
-            addItemBtn.textContent = 'Aggiungi Prodotto';
             addItemBtn.className = 'add-item-btn';
             addItemBtn.dataset.catIndex = catIndex;
+            addItemBtn.textContent = 'Aggiungi Prodotto';
             div.appendChild(addItemBtn);
 
             return div;
@@ -548,8 +536,44 @@ window.addEventListener('load', () => {
         },
 
         saveChanges: async () => {
-            const updatedMenu = handle.collectDataFromUI();
-            await github.saveMenuFile(updatedMenu);
+            const saveButton = document.getElementById('save-changes-btn');
+            
+            // Disabilita il pulsante per prevenire click multipli
+            saveButton.disabled = true;
+
+            let countdown = 50;
+            const originalButtonText = saveButton.textContent;
+            
+            // Avvia il conto alla rovescia visivo
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                saveButton.textContent = `Attendi (${countdown}s)`;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    saveButton.textContent = 'Salvataggio in corso...';
+                }
+            }, 1000);
+
+            showStatus(`Inizio attesa di 50 secondi per la sincronizzazione di GitHub...`, false);
+
+            setTimeout(async () => {
+                clearInterval(countdownInterval); // Assicurati che il timer sia fermo
+                
+                try {
+                    showStatus('Salvataggio in corso su GitHub...', false);
+                    const menuDataToSave = JSON.parse(JSON.stringify(state.menuData));
+                    await github.saveMenuFile(menuDataToSave);
+                } catch (error) {
+                    // L'errore viene già gestito all'interno di saveMenuFile,
+                    // ma in caso di eccezioni impreviste, le mostriamo qui.
+                    showStatus(`Errore imprevisto durante il salvataggio: ${error.message}`, true);
+                    console.error("Errore non gestito in saveChanges:", error);
+                } finally {
+                    // Riabilita il pulsante e ripristina il testo originale
+                    saveButton.disabled = false;
+                    saveButton.textContent = originalButtonText;
+                }
+            }, 50000); // 50 secondi di attesa
         },
 
         delegate: async (event) => {
@@ -747,6 +771,11 @@ window.addEventListener('load', () => {
                 console.error('Errore durante l\'aggiornamento del file:', error);
                 showStatus(`Errore durante l'aggiornamento: ${error.message}`, true);
             }
+        },
+
+        // Funzione per aggiornare i dati del menù quando un campo viene modificato
+        updateMenuData: (catIndex, itemIndex, field, value) => {
+            // ... existing code ...
         }
     };
     
@@ -781,7 +810,7 @@ window.addEventListener('load', () => {
             }
         }, true);
         
-        timer.init();
+        deploymentTimer.init();
     }
 
     init();
