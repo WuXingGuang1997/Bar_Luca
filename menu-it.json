@@ -90,7 +90,7 @@
           "name": "Mojito",
           "price": "8.00€",
           "description": "Rum, lime, menta fresca, zucchero e soda. Un'esplosione di freschezza.",
-          "image": ""
+          "image": "images/mojito_1751701295454_83e7nt.jpeg"
         }
       ]
     },
@@ -107,13 +107,13 @@
           "name": "Panna Cotta",
           "price": "5.50€",
           "description": "Servita con coulis di frutti di bosco o caramello.",
-          "image": ""
+          "image": "images/pannacotta_1751701399740_6ylpgx.jpeg"
         },
         {
           "name": "Cheesecake",
           "price": "6.50€",
           "description": "Cheesecake cremosa con base di biscotto e topping a scelta.",
-          "image": ""
+          "image": "images/cheesecake_1751701401931_6jewtr.jpeg"
         }
       ]
     }
