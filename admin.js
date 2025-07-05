@@ -563,7 +563,7 @@ window.addEventListener('load', () => {
             // Disabilita il pulsante per prevenire click multipli
             saveButton.disabled = true;
 
-            let countdown = 50;
+            let countdown = 1;
             const originalButtonText = saveButton.textContent;
             
             // Avvia il conto alla rovescia visivo
@@ -595,7 +595,7 @@ window.addEventListener('load', () => {
                     saveButton.disabled = false;
                     saveButton.textContent = originalButtonText;
                 }
-            }, 50000); // 50 secondi di attesa
+            }, 1000); // 50 secondi di attesa
         },
 
         delegate: async (event) => {
