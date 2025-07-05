@@ -2,117 +2,69 @@
   "bar_name": "Bar Luca",
   "categories": [
     {
-      "name": "Caffetteria & Colazioni",
+      "name": "Caffetteria",
       "items": [
         {
           "name": "Espresso",
-          "price": "1.30€",
-          "description": "L'autentico espresso italiano, intenso e aromatico.",
+          "price": "1.20€",
+          "description": "Caffè espresso classico.",
           "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
           "price": "2.50€",
-          "description": "Un equilibrio perfetto di espresso, latte e schiuma cremosa.",
+          "description": "Espresso con latte montato a vapore.",
           "image": "images/cappuccino.jpg"
         },
         {
           "name": "Latte Macchiato",
           "price": "3.00€",
-          "description": "Latte caldo macchiato con un goccio di caffè espresso.",
-          "image": "images/latte-macchiato.jpg"
-        },
-        {
-          "name": "Cornetto (Vuoto o Farcito)",
-          "price": "1.50€",
-          "description": "Scegli tra il classico cornetto vuoto, alla crema, cioccolato o marmellata.",
-          "image": ""
-        },
-        {
-          "name": "Succo di Frutta",
-          "price": "3.50€",
-          "description": "Succo di arancia, ananas o pesca.",
+          "description": "Latte caldo con un goccio di caffè.",
           "image": ""
         }
       ]
     },
     {
-      "name": "Panini & Snack",
+      "name": "Cocktail",
       "items": [
-        {
-          "name": "Panino Prosciutto e Mozzarella",
-          "price": "5.50€",
-          "description": "Panino fresco con prosciutto crudo di Parma e mozzarella di bufala.",
-          "image": "images/panino-prosciutto.jpg"
-        },
-        {
-          "name": "Toast Classico",
-          "price": "4.50€",
-          "description": "Prosciutto cotto e formaggio fuso, un classico intramontabile.",
-          "image": "images/toast.jpg"
-        },
-        {
-          "name": "Insalata Caprese",
-          "price": "8.00€",
-          "description": "Pomodoro fresco, mozzarella di bufala, basilico e un filo d'olio EVO.",
-          "image": ""
-        },
-        {
-          "name": "Patatine Fritte",
-          "price": "4.00€",
-          "description": "Porzione abbondante di patatine fritte dorate e croccanti.",
-          "image": ""
-        }
-      ]
-    },
-    {
-      "name": "Aperitivi & Cocktail",
-      "items": [
-        {
-          "name": "Aperol Spritz",
-          "price": "7.00€",
-          "description": "Il re degli aperitivi, con Aperol, Prosecco e una fetta d'arancia.",
-          "image": "images/aperol-spritz.jpg"
-        },
         {
           "name": "Negroni",
-          "price": "8.50€",
-          "description": "Un cocktail deciso con Gin, Campari e Vermouth rosso.",
+          "price": "8.00€",
+          "description": "Gin, Campari, Vermouth rosso.",
           "image": "images/negroni.jpg"
         },
         {
-          "name": "Calice di Prosecco",
-          "price": "5.00€",
-          "description": "Bollicine fresche e fruttate per un brindisi perfetto.",
-          "image": "images/prosecco.jpg"
-        },
-        {
-          "name": "Mojito",
-          "price": "8.00€",
-          "description": "Rum, lime, menta fresca, zucchero e soda. Un'esplosione di freschezza.",
+          "name": "Spritz",
+          "price": "7.00€",
+          "description": "Aperol, Prosecco, Soda.",
           "image": ""
         }
       ]
     },
     {
-      "name": "Dolci",
+      "name": "Snack",
       "items": [
         {
-          "name": "Tiramisù",
-          "price": "6.00€",
-          "description": "Il dolce italiano per eccellenza, preparato secondo la ricetta tradizionale.",
-          "image": "images/tiramisu.jpg"
+          "name": "Cornetto",
+          "price": "1.50€",
+          "description": "Cornetto classico o con farcitura.",
+          "image": "images/cornetto.jpg"
         },
         {
-          "name": "Panna Cotta",
-          "price": "5.50€",
-          "description": "Servita con coulis di frutti di bosco o caramello.",
+          "name": "Panino",
+          "price": "5.00€",
+          "description": "Panino con prosciutto e formaggio.",
           "image": ""
-        },
+        }
+      ]
+    },
+    {
+      "name": "Nuova Categoria",
+      "items": [
         {
-          "name": "Cheesecake",
-          "price": "6.50€",
-          "description": "Cheesecake cremosa con base di biscotto e topping a scelta.",
+          "name": "Nuovo Prodotto",
+          "price": "0.00€",
+          "description": "",
           "image": ""
         }
       ]
