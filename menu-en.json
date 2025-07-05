@@ -2,66 +2,123 @@
   "bar_name": "Bar Luca",
   "categories": [
     {
-      "name": "Coffee Shop",
+      "name": "Coffee & Breakfast",
       "items": [
         {
           "name": "Espresso",
-          "price": "€1.20",
-          "description": "Classic espresso coffee.",
+          "price": "1.30€",
+          "description": "The authentic Italian espresso, intense and aromatic.",
           "image": "images/espresso.jpg"
         },
         {
           "name": "Cappuccino",
-          "price": "€2.50",
-          "description": "Espresso with steamed milk foam.",
+          "price": "2.50€",
+          "description": "A perfect balance of espresso, milk, and creamy foam.",
           "image": "images/cappuccino.jpg"
         },
         {
           "name": "Latte Macchiato",
-          "price": "€3.00",
-          "description": "Hot milk with a shot of coffee.",
+          "price": "3.00€",
+          "description": "Hot milk stained with a shot of espresso.",
+          "image": "images/latte-macchiato.jpg"
+        },
+        {
+          "name": "Croissant (Plain or Filled)",
+          "price": "1.50€",
+          "description": "Choose between a plain, cream, chocolate, or jam-filled croissant.",
+          "image": ""
+        },
+        {
+          "name": "Fruit Juice",
+          "price": "3.50€",
+          "description": "Orange, pineapple, or peach juice.",
           "image": ""
         }
       ]
     },
     {
-      "name": "Cocktails",
+      "name": "Sandwiches & Snacks",
       "items": [
         {
+          "name": "Prosciutto and Mozzarella Sandwich",
+          "price": "5.50€",
+          "description": "Fresh sandwich with Parma ham and buffalo mozzarella.",
+          "image": "images/panino-prosciutto.jpg"
+        },
+        {
+          "name": "Classic Toast",
+          "price": "4.50€",
+          "description": "Cooked ham and melted cheese, a timeless classic.",
+          "image": "images/toast.jpg"
+        },
+        {
+          "name": "Caprese Salad",
+          "price": "8.00€",
+          "description": "Fresh tomato, buffalo mozzarella, basil, and a drizzle of EVO oil.",
+          "image": ""
+        },
+        {
+          "name": "French Fries",
+          "price": "4.00€",
+          "description": "A generous portion of golden and crispy french fries.",
+          "image": ""
+        }
+      ]
+    },
+    {
+      "name": "Aperitifs & Cocktails",
+      "items": [
+        {
+          "name": "Aperol Spritz",
+          "price": "7.00€",
+          "description": "The king of aperitifs, with Aperol, Prosecco, and a slice of orange.",
+          "image": "images/aperol-spritz.jpg"
+        },
+        {
           "name": "Negroni",
-          "price": "€8.00",
-          "description": "Gin, Campari, Red Vermouth.",
+          "price": "8.50€",
+          "description": "A strong cocktail with Gin, Campari, and red Vermouth.",
           "image": "images/negroni.jpg"
         },
         {
-          "name": "Spritz",
-          "price": "€7.00",
-          "description": "Aperol, Prosecco, Soda.",
+          "name": "Glass of Prosecco",
+          "price": "5.00€",
+          "description": "Fresh and fruity bubbles for a perfect toast.",
+          "image": "images/prosecco.jpg"
+        },
+        {
+          "name": "Mojito",
+          "price": "8.00€",
+          "description": "Rum, lime, fresh mint, sugar, and soda. An explosion of freshness.",
           "image": ""
         }
       ]
     },
     {
-      "name": "Snacks",
+      "name": "Desserts",
       "items": [
         {
-          "name": "Croissant",
-          "price": "€1.50",
-          "description": "Classic or filled croissant.",
-          "image": "images/cornetto.jpg"
+          "name": "Tiramisù",
+          "price": "6.00€",
+          "description": "The quintessential Italian dessert, prepared according to the traditional recipe.",
+          "image": "images/tiramisu.jpg"
         },
         {
-          "name": "Sandwich",
-          "price": "€5.00",
-          "description": "Sandwich with ham and cheese.",
+          "name": "Panna Cotta",
+          "price": "5.50€",
+          "description": "Served with a berry or caramel coulis.",
+          "image": ""
+        },
+        {
+          "name": "Cheesecake",
+          "price": "6.50€",
+          "description": "Creamy cheesecake with a biscuit base and your choice of topping.",
           "image": ""
         }
       ]
     }
   ],
   "labels": {
-    "download_pdf": "Download PDF Menu",
-    "staff_login": "Staff Login",
     "language_toggle": "IT"
   }
 }
