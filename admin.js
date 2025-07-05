@@ -305,6 +305,21 @@ window.addEventListener('load', () => {
             const maxRetries = 3;
             const filePath = `menu-${state.currentLang}.json`;
             
+            // Deep copy per modificare i dati prima del salvataggio
+            const dataToSave = JSON.parse(JSON.stringify(menuData));
+
+            // Assicura che tutti i prezzi siano stringhe formattate correttamente
+            dataToSave.categories.forEach(category => {
+                if (category.items) {
+                    category.items.forEach(item => {
+                        if (item.hasOwnProperty('price')) {
+                            const priceValue = parseFloat(String(item.price).replace(/[^0-9.]/g, '')) || 0;
+                            item.price = `${priceValue.toFixed(2)}€`;
+                        }
+                    });
+                }
+            });
+            
             try {
                 // Se è un retry, ricarica il file per ottenere l'ultimo SHA
                 if (retryCount > 0) {
@@ -312,7 +327,7 @@ window.addEventListener('load', () => {
                     await github.refreshFileSha(state.currentLang);
                 }
                 
-                const content = utf8ToBase64(JSON.stringify(menuData, null, 2));
+                const content = utf8ToBase64(JSON.stringify(dataToSave, null, 2));
                 
                 showStatus(`Salvataggio del menù su GitHub... (tentativo ${retryCount + 1})`);
                 
@@ -452,25 +467,32 @@ window.addEventListener('load', () => {
                     </div>
                     <div class="field-group">
                         <label>Prezzo</label>
-                        <input type="text" value="${item.price}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="price" placeholder="Prezzo">
+                        <div class="price-input-wrapper">
+                            <input type="number" step="0.01" value="${String(item.price).replace(/[^0-9.]/g, '')}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="price" placeholder="es. 5.50">
+                            <span class="currency-symbol">€</span>
+                        </div>
                     </div>
                     <div class="field-group full-width">
                         <label>Descrizione</label>
-                        <input type="text" value="${item.description}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="description" placeholder="Descrizione">
+                        <textarea data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="description" placeholder="Descrizione">${item.description}</textarea>
                     </div>
-                    <div class="field-group">
-                        <label>Immagine</label>
-                        <input type="text" value="${item.image}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="image" placeholder="percorso/immagine.jpg" readonly>
-                        <div class="image-options">
-                            <button type="button" class="btn-secondary existing-images-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                                📁 Scegli Esistente
-                            </button>
-                            <span class="or-separator">oppure</span>
-                            <input type="file" accept="image/*" class="image-upload-input" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
-                        </div>
-                        <div class="image-preview-container">
-                            ${imageElement}
-                        </div>
+                    <div class="field-group full-width">
+                         <label>Immagine</label>
+                         <input type="text" value="${item.image}" data-cat-index="${catIndex}" data-item-index="${itemIndex}" data-field="image" placeholder="percorso/immagine.jpg" readonly>
+                         <div class="image-management-area">
+                             <div class="image-controls">
+                                 <div class="image-options">
+                                     <button type="button" class="btn-secondary existing-images-btn" data-cat-index="${catIndex}" data-item-index="${itemIndex}">
+                                         📁 Esistente
+                                     </button>
+                                     <span class="or-separator">o</span>
+                                     <input type="file" accept="image/*" class="image-upload-input" data-cat-index="${catIndex}" data-item-index="${itemIndex}" title="Carica nuova immagine">
+                                 </div>
+                             </div>
+                             <div class="image-preview-container">
+                                 ${imageElement}
+                             </div>
+                         </div>
                     </div>
                 </div>
                 <div class="item-actions">
