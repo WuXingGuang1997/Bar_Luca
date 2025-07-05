@@ -790,3 +790,38 @@ input[type="file"] {
 .product-fields {
     /* ... stili esistenti ... */
 }
+
+.card-content {
+    padding: 25px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Sezione Autenticazione --- */
+#auth-section .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+/* --- Controlli Globali del Pannello --- */
+.panel-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: var(--white-color);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.panel-controls label {
+    margin-right: 10px;
+    font-weight: 500;
+}
