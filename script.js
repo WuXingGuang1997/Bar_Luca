@@ -1,106 +1,114 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const state = {
-        currentLanguage: 'it',
-        menuData: null
-    };
+    class MenuApp {
+        constructor() {
+            this.state = {
+                currentLanguage: localStorage.getItem('preferredLanguage') || 'it',
+                menuData: null
+            };
 
-    // Elementi del DOM
-    const menuContainer = document.getElementById('menu-container');
-    const langToggleBtn = document.getElementById('lang-toggle');
+            this.dom = {
+                menuContainer: document.getElementById('menu-container'),
+                langToggleBtn: document.getElementById('lang-toggle'),
+                barName: document.getElementById('bar-name')
+            };
 
-    // Funzione per caricare i dati del menù
-    async function loadMenu(lang) {
-        try {
-            // Aggiungiamo un parametro per evitare problemi di cache
-            const response = await fetch(`menu-${lang}.json?v=${new Date().getTime()}`);
-            if (!response.ok) {
-                throw new Error(`Errore caricamento menù: ${response.statusText}`);
+            this.init();
+        }
+
+        async init() {
+            this.dom.langToggleBtn.addEventListener('click', () => this.toggleLanguage());
+            await this.loadMenu(this.state.currentLanguage);
+        }
+
+        async loadMenu(lang) {
+            try {
+                const response = await fetch(`menu-${lang}.json?v=${new Date().getTime()}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                this.state.menuData = await response.json();
+                this.state.currentLanguage = lang;
+                localStorage.setItem('preferredLanguage', lang);
+                this.renderMenu();
+            } catch (error) {
+                console.error("Failed to load menu:", error);
+                this.dom.menuContainer.innerHTML = `<p class="error-message">Non è stato possibile caricare il menù. Riprova più tardi.</p>`;
             }
-            state.menuData = await response.json();
-            state.currentLanguage = lang;
-            localStorage.setItem('preferredLanguage', lang);
-            renderMenu();
-        } catch (error) {
-            console.error(error);
-            menuContainer.innerHTML = `<p style="text-align:center;">Errore nel caricamento del menù. Riprova più tardi.</p>`;
+        }
+
+        toggleLanguage() {
+            const newLang = this.state.currentLanguage === 'it' ? 'en' : 'it';
+            this.loadMenu(newLang);
+        }
+
+        createMenuItem(item) {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'menu-item';
+            itemElement.innerHTML = `
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy" onerror="this.style.display='none'">` : ''}
+                <div class="menu-item-content">
+                    <div class="menu-item-header">
+                        <h3 class="menu-item-name">${item.name}</h3>
+                        <span class="menu-item-price">${item.price}</span>
+                    </div>
+                    <p class="menu-item-description">${item.description}</p>
+                </div>
+            `;
+            return itemElement;
+        }
+
+        createCategorySection(category) {
+            const section = document.createElement('div');
+            section.className = 'category';
+        
+            const header = document.createElement('div');
+            header.className = 'category-header';
+            header.innerHTML = `
+                <h2>${category.name}</h2>
+                <span class="category-toggle">▼</span>
+            `;
+            
+            const itemsGrid = document.createElement('div');
+            itemsGrid.className = 'category-items';
+            
+            if(category.items && category.items.length > 0) {
+                category.items.forEach(item => {
+                    const itemElement = this.createMenuItem(item);
+                    itemsGrid.appendChild(itemElement);
+                });
+            } else {
+                itemsGrid.innerHTML = `<p>Nessun prodotto in questa categoria.</p>`;
+            }
+            
+            section.appendChild(header);
+            section.appendChild(itemsGrid);
+            
+            // Funzionalità di apertura/chiusura
+            header.addEventListener('click', () => {
+                section.classList.toggle('open');
+            });
+            
+            return section;
+        }
+
+        renderMenu() {
+            const data = this.state.menuData;
+            if (!data) return;
+
+            this.dom.barName.textContent = data.bar_name;
+            this.dom.langToggleBtn.textContent = data.labels.language_toggle;
+            
+            this.dom.menuContainer.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+
+            data.categories.forEach(category => {
+                const categorySection = this.createCategorySection(category);
+                fragment.appendChild(categorySection);
+            });
+
+            this.dom.menuContainer.appendChild(fragment);
         }
     }
 
-    // Funzione per renderizzare il menù
-    function renderMenu() {
-        const data = state.menuData;
-        if (!data) return;
+    new MenuApp();
 
-        // Imposta i testi dell'interfaccia
-        document.title = data.bar_name + " - Menù Digitale";
-        langToggleBtn.textContent = data.labels.language_toggle;
-
-        // Pulisce il contenitore del menù
-        menuContainer.innerHTML = '';
-        const fragment = document.createDocumentFragment();
-
-        data.categories.forEach(category => {
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'category';
-
-            const categoryHeader = document.createElement('div');
-            categoryHeader.className = 'category-header';
-            categoryHeader.innerHTML = `
-                <h2>${category.name}</h2>
-                <span class="category-toggle">+</span>
-            `;
-
-            const categoryItems = document.createElement('div');
-            categoryItems.className = 'category-items';
-
-            if (category.items.length === 0) {
-                 categoryItems.innerHTML = `<p>Nessun articolo in questa categoria.</p>`;
-            } else {
-                category.items.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'menu-item';
-                    itemDiv.innerHTML = `
-                        ${item.image && item.image.trim() !== '' ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image" loading="lazy" onerror="this.style.display='none'">` : ''}
-                        <div class="menu-item-details">
-                            <div class="menu-item-header">
-                                <span class="menu-item-name">${item.name}</span>
-                                <span class="menu-item-price">${item.price}</span>
-                            </div>
-                            <p class="menu-item-description">${item.description}</p>
-                        </div>
-                    `;
-                    categoryItems.appendChild(itemDiv);
-                });
-            }
-            
-            categoryDiv.appendChild(categoryHeader);
-            categoryDiv.appendChild(categoryItems);
-            fragment.appendChild(categoryDiv);
-
-            // Event listener per l'accordion
-            categoryHeader.addEventListener('click', () => {
-                categoryDiv.classList.toggle('open');
-            });
-        });
-
-        menuContainer.appendChild(fragment);
-    }
-
-    // Funzione per cambiare lingua
-    function toggleLanguage() {
-        const newLang = state.currentLanguage === 'it' ? 'en' : 'it';
-        loadMenu(newLang);
-    }
-
-    // Event listeners
-    langToggleBtn.addEventListener('click', toggleLanguage);
-
-    // Inizializzazione
-    function init() {
-        const savedLang = localStorage.getItem('preferredLanguage') || 'it';
-        loadMenu(savedLang);
-    }
-
-    init();
 });

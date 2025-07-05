@@ -3,41 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bar Luca - Menù Digitale</title>
-    <link rel="stylesheet" href="style.css?v=3.0">
+    <title>Bar Luca - Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
         <img src="images/logo.png" alt="Bar Luca Logo" id="logo">
         <h1 id="bar-name"></h1>
-        <button id="language-toggle"></button>
+        <div class="controls">
+            <button id="lang-toggle" class="control-btn">IT</button>
+        </div>
     </header>
 
     <main id="menu-container">
-        <!-- Il menù verrà caricato qui da JavaScript -->
+        <!-- Le categorie e i prodotti verranno inseriti qui da script.js -->
     </main>
     
     <footer>
         <div class="footer-content">
-            <div class="footer-info">
-                <h3>Bar Luca</h3>
-                <p>Via Roma, 123 - 20121 Milano (MI)</p>
-                <p>Tel: 02 12345678</p>
-                <p>Email: info@barluca.it</p>
-            </div>
-            <div class="footer-hours">
-                <h3>Orari di Apertura</h3>
-                <p>Lunedì - Venerdì: 07:00 - 22:00</p>
-                <p>Sabato: 08:00 - 00:00</p>
-                <p>Domenica: Chiuso</p>
-            </div>
+            <p class="contact-line">
+                <span><i class="fas fa-map-marker-alt"></i> Via Roma, 1, 12345 Città, Italia</span>
+                <span class="separator">|</span>
+                <span><i class="fas fa-phone"></i> <a href="tel:+390123456789">+39 012 345 6789</a></span>
+                <span class="separator">|</span>
+                <span><i class="fas fa-envelope"></i> <a href="mailto:info@barluca.it">info@barluca.it</a></span>
+            </p>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Bar Luca - Tutti i diritti riservati.</p>
+            <p>&copy; 2024 Bar Luca | P.IVA 12345678901 | Tutti i diritti riservati.</p>
         </div>
     </footer>
 
-    <script src="script.js?v=3.0"></script>
+    <script src="script.js"></script>
 </body>
 </html>
