@@ -25,6 +25,39 @@ window.addEventListener('load', () => {
     const statusArea = document.getElementById('status-area');
     const deploymentTimerEl = document.getElementById('last-saved-timer');
 
+    // --- Deployment Timer Logic ---
+    const deploymentTimer = {
+        intervalId: null,
+        stop: () => {
+            if (deploymentTimer.intervalId) {
+                clearInterval(deploymentTimer.intervalId);
+                deploymentTimer.intervalId = null;
+            }
+        },
+        start: () => {
+            deploymentTimer.stop(); // Ferma qualsiasi timer precedente
+
+            let countdown = 50; // 50 secondi di countdown
+            
+            const update = () => {
+                deploymentTimerEl.classList.remove('hidden', 'success');
+                deploymentTimerEl.classList.add('visible');
+
+                if (countdown > 0) {
+                    deploymentTimerEl.textContent = `✅ Salvataggio riuscito! Aggiornamento del sito in corso... Tempo stimato: ${countdown}s`;
+                    countdown--;
+                } else {
+                    deploymentTimer.stop();
+                    deploymentTimerEl.textContent = `🎉 Sito aggiornato! Le modifiche dovrebbero essere visibili.`;
+                    deploymentTimerEl.classList.add('success');
+                }
+            };
+            
+            update(); // Chiamata immediata
+            deploymentTimer.intervalId = setInterval(update, 1000);
+        }
+    };
+
     // --- Utility Functions ---
     const showStatus = (message, isError = false) => {
         statusArea.textContent = message;
@@ -333,6 +366,7 @@ window.addEventListener('load', () => {
                 const responseData = await response.json();
                 state.fileSha = responseData.content.sha; // Aggiorna lo SHA per il prossimo salvataggio
                 showStatus('✅ Menù salvato con successo su GitHub!', false);
+                deploymentTimer.start(); // Avvia il timer di deployment
 
             } catch (error) {
                 if (error.message.includes('409') && retryCount < maxRetries) {
